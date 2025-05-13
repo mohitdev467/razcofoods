@@ -13,17 +13,27 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to allow users to scan QR codes or upload photos.",
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to upload and manage images."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/splash-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.razcofoods.razcofoods"
     },
     "web": {
       "favicon": "./assets/splash-icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6dde4c01-a6c0-41ed-b821-e050b8623659"
+      }
     }
   }
 }
