@@ -255,6 +255,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     borderRadius: 10,
+    borderWidth:1,
+    borderColor:Colors.primaryButtonColor
   },
   cardGradient: {
     padding: rw(4.5),
