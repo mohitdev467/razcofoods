@@ -8,6 +8,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   
 } from "react-native";
 import {
@@ -87,6 +88,16 @@ const OtpVerificationScreen = () => {
 
   return (
     <SafeAreaView style={styles.mainContainer}>
+        <KeyboardAvoidingView
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // adjust if you have header/navigation
+          >
+            <ScrollView
+              contentContainerStyle={{ flexGrow: 1 }}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+            >
       <TouchableOpacity onPress={goBack} style={styles.backWrapper}>
         <Icon
           name="arrow-left"
@@ -131,6 +142,9 @@ const OtpVerificationScreen = () => {
           <Text style={styles.verifyText}>Verify</Text>
         </TouchableOpacity>
       </KeyboardAvoidingView>
+    </ScrollView>
+    </KeyboardAvoidingView>
+
     </SafeAreaView>
   );
 };
@@ -143,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   backWrapper: {
-    marginVertical: Responsive.heightPx(1),
+    marginVertical: Responsive.heightPx(0),
     marginHorizontal: Responsive.widthPx(3),
   },
   container: {

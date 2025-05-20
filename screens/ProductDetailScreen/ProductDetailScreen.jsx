@@ -113,7 +113,7 @@ const ProductDetailScreen = () => {
 
   // if (!products?.length) return <Text>No products found</Text>;
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor:Colors.whiteColor }}>
       <HeaderWithBack title="Product Detail" />
 
       <ScrollView style={styles.container}>

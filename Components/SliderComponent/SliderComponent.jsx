@@ -9,9 +9,8 @@ import {
 } from "react-native";
 import Swiper from "react-native-swiper";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
-import { Colors, pickColors } from "../../helpers/theme/colors";
+import { Colors } from "../../helpers/theme/colors";
 import { useBannerData } from "../../helpers/Hooks/useBannerData";
-import { ActivityIndicator } from "react-native-paper";
 import { IMAGE_BASE_URL } from "../../services/Api/axiosInstance";
 import { ImagePicker } from "../../helpers/ImageHelper/ImagePicker";
 import { cleanImagePath } from "../../Utilities/CommonUtils/CommonUtils";

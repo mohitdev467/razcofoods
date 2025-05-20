@@ -2,6 +2,7 @@ import {
   Alert,
   Image,
   ImageBackground,
+  KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
@@ -104,109 +105,119 @@ const LoginScreen = () => {
         <Text style={styles.backToHome}>Back to home</Text>
       </TouchableOpacity>
 
-      <ScrollView keyboardShouldPersistTaps="handled">
-        <View style={styles.imageWrapper}>
-          <Image source={ImagePicker.logoImage} style={styles.image} />
-        </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // adjust if you have header/navigation
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.imageWrapper}>
+            <Image source={ImagePicker.logoImage} style={styles.image} />
+          </View>
 
-        <View style={styles.loginInputWrapper}>
-          <CustomInputField
-            name="email"
-            label="Email"
-            value={formState.email}
-            onTextChange={updateFormState}
-            placeholder="Enter email"
-            error={!formState.email}
-            helperText={formErrors.email}
-            leftIcon={
-              <EmailIcon
-                name="envelope-o"
-                size={Responsive.font(5)}
-                color={Colors.blueColorText}
-              />
-            }
-            onLeftIconPress={() => console.log("Icon pressed!")}
-            containerStyle={styles.inputContainerStyle}
-            labelStyle={{ color: Colors.blackColor }}
-            inputStyle={{ borderColor: Colors.blackColor }}
-          />
-
-          <View>
+          <View style={styles.loginInputWrapper}>
             <CustomInputField
-              name="password"
-              label="Password"
-              value={formState.password}
+              name="email"
+              label="Email"
+              value={formState.email}
               onTextChange={updateFormState}
-              placeholder="Enter Password"
-              error={!formState.password}
-              helperText={formErrors.password}
+              placeholder="Enter email"
+              error={!formState.email}
+              helperText={formErrors.email}
               leftIcon={
-                <Icon
-                  name="lock"
+                <EmailIcon
+                  name="envelope-o"
                   size={Responsive.font(5)}
                   color={Colors.blueColorText}
                 />
               }
-              rightIcon={
-                <Icon
-                  name={formState.isShowPassword ? "eye-off" : "eye"}
-                  size={Responsive.font(5)}
-                  color={Colors.blackColor}
-                />
-              }
-              onRightIconPress={() =>
-                updateFormState("isShowPassword", !formState.isShowPassword)
-              }
-              containerStyle={{ marginBottom: Responsive.heightPx(1.8) }}
-              secureTextEntry={formState.isShowPassword}
+              onLeftIconPress={() => console.log("Icon pressed!")}
+              containerStyle={styles.inputContainerStyle}
               labelStyle={{ color: Colors.blackColor }}
               inputStyle={{ borderColor: Colors.blackColor }}
             />
-          </View>
 
-          <TouchableOpacity
-            style={styles.forgetPasswordWrapper}
-            onPress={() =>
-              navigation.navigate(screenNames.ForgotPasswordScreen)
-            }
-          >
-            <Text style={styles.forgetPasswordText}>Forgot Password ?</Text>
-          </TouchableOpacity>
-
-          {formState.loading ? (
-            <Loader visible={formState.loading} />
-          ) : (
-            <View style={styles.buttonContainer}>
-              <ButtonComponent
-                title={commonEntities.loginText}
-                onPress={handleLogin}
+            <View>
+              <CustomInputField
+                name="password"
+                label="Password"
+                value={formState.password}
+                onTextChange={updateFormState}
+                placeholder="Enter Password"
+                error={!formState.password}
+                helperText={formErrors.password}
+                leftIcon={
+                  <Icon
+                    name="lock"
+                    size={Responsive.font(5)}
+                    color={Colors.blueColorText}
+                  />
+                }
+                rightIcon={
+                  <Icon
+                    name={formState.isShowPassword ? "eye-off" : "eye"}
+                    size={Responsive.font(5)}
+                    color={Colors.blackColor}
+                  />
+                }
+                onRightIconPress={() =>
+                  updateFormState("isShowPassword", !formState.isShowPassword)
+                }
+                containerStyle={{ marginBottom: Responsive.heightPx(1.8) }}
+                secureTextEntry={formState.isShowPassword}
+                labelStyle={{ color: Colors.blackColor }}
+                inputStyle={{ borderColor: Colors.blackColor }}
               />
             </View>
-          )}
-          <DividerWithText style={styles.dividerTextStyle} title={"OR"} />
 
-          <View style={styles.alreadyAccountwrapper}>
-            <Text style={styles.accountText}>
-              {commonEntities.alreadyHaveAccountText}
-            </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate(screenNames.RegisterScreen)}
+              style={styles.forgetPasswordWrapper}
+              onPress={() =>
+                navigation.navigate(screenNames.ForgotPasswordScreen)
+              }
             >
-              <Text
-                style={[
-                  styles.accountText,
-                  {
-                    color: Colors.primaryButtonColor,
-                    textDecorationLine: "underline",
-                  },
-                ]}
-              >
-                {commonEntities.signUpText}
-              </Text>
+              <Text style={styles.forgetPasswordText}>Forgot Password ?</Text>
             </TouchableOpacity>
+
+            {formState.loading ? (
+              <Loader visible={formState.loading} />
+            ) : (
+              <View style={styles.buttonContainer}>
+                <ButtonComponent
+                  title={commonEntities.loginText}
+                  onPress={handleLogin}
+                />
+              </View>
+            )}
+            <DividerWithText style={styles.dividerTextStyle} title={"OR"} />
+
+            <View style={styles.alreadyAccountwrapper}>
+              <Text style={styles.accountText}>
+                {commonEntities.alreadyHaveAccountText}
+              </Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(screenNames.RegisterScreen)}
+              >
+                <Text
+                  style={[
+                    styles.accountText,
+                    {
+                      color: Colors.primaryButtonColor,
+                      textDecorationLine: "underline",
+                    },
+                  ]}
+                >
+                  {commonEntities.signUpText}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -224,7 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: Responsive.widthPx(2),
-    marginTop:Platform.OS === "ios" && Responsive.heightPx(-5)
+    marginTop: Platform.OS === "ios" && Responsive.heightPx(-5)
   },
   imageWrapper: {
     justifyContent: "center",

@@ -1,5 +1,8 @@
 import {
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -82,75 +85,87 @@ const ForgotPasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        onPress={() => navigation.navigate(screenNames.LoginScreen)}
-        style={styles.backWrapper}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // adjust if you have header/navigation
       >
-        <Icon
-          name="arrow-left"
-          size={Responsive.font(7)}
-          color={Colors.blackColor}
-        />
-      </TouchableOpacity>
-
-      <View style={styles.imageWrapper}>
-        <Image source={ImagePicker.logoImage} style={styles.image} />
-      </View>
-
-      <View style={styles.loginInputWrapper}>
-        <CustomInputField
-          name="email"
-          label="Email"
-          value={formState.email}
-          onTextChange={updateFormState}
-          placeholder="Enter email"
-          error={!formState.email}
-          helperText={formErrors.email}
-          leftIcon={
-            <EmailIcon
-              name="envelope-o"
-              size={Responsive.font(5)}
-              color={Colors.blueColorText}
-            />
-          }
-          onLeftIconPress={() => console.log("Icon pressed!")}
-          containerStyle={styles.inputContainerStyle}
-          labelStyle={{ color: Colors.blackColor }}
-          inputStyle={{ borderColor: Colors.blackColor }}
-        />
-
-        {formState.loading ? (
-          <Loader visible={formState.loading} />
-        ) : (
-          <View style={styles.buttonContainer}>
-            <ButtonComponent
-              title={commonEntities.ResetPassword}
-              onPress={handleForget}
-            />
-          </View>
-        )}
-
-        <DividerWithText style={styles.dividerTextStyle} title={"OR"} />
-
-        <View style={styles.alreadyAccountwrapper}>
-          <Text style={styles.accountText}>Back to</Text>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <TouchableOpacity
             onPress={() => navigation.navigate(screenNames.LoginScreen)}
+            style={styles.backWrapper}
           >
-            <Text
-              style={[
-                styles.accountText,
-                {
-                  color: Colors.primaryButtonColor,
-                  textDecorationLine: "underline",
-                },
-              ]}
-            >
-              {commonEntities.loginText}
-            </Text>
+            <Icon
+              name="arrow-left"
+              size={Responsive.font(7)}
+              color={Colors.blackColor}
+            />
           </TouchableOpacity>
-        </View>
-      </View>
+
+          <View style={styles.imageWrapper}>
+            <Image source={ImagePicker.logoImage} style={styles.image} />
+          </View>
+
+          <View style={styles.loginInputWrapper}>
+            <CustomInputField
+              name="email"
+              label="Email"
+              value={formState.email}
+              onTextChange={updateFormState}
+              placeholder="Enter email"
+              error={!formState.email}
+              helperText={formErrors.email}
+              leftIcon={
+                <EmailIcon
+                  name="envelope-o"
+                  size={Responsive.font(5)}
+                  color={Colors.blueColorText}
+                />
+              }
+              onLeftIconPress={() => console.log("Icon pressed!")}
+              containerStyle={styles.inputContainerStyle}
+              labelStyle={{ color: Colors.blackColor }}
+              inputStyle={{ borderColor: Colors.blackColor }}
+            />
+
+            {formState.loading ? (
+              <Loader visible={formState.loading} />
+            ) : (
+              <View style={styles.buttonContainer}>
+                <ButtonComponent
+                  title={commonEntities.ResetPassword}
+                  onPress={handleForget}
+                />
+              </View>
+            )}
+
+            <DividerWithText style={styles.dividerTextStyle} title={"OR"} />
+
+            <View style={styles.alreadyAccountwrapper}>
+              <Text style={styles.accountText}>Back to</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate(screenNames.LoginScreen)}
+              >
+                <Text
+                  style={[
+                    styles.accountText,
+                    {
+                      color: Colors.primaryButtonColor,
+                      textDecorationLine: "underline",
+                    },
+                  ]}
+                >
+                  {commonEntities.loginText}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -168,6 +183,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: Responsive.widthPx(2),
+    marginTop: Responsive.heightPx(0)
   },
   loginInputWrapper: {
     paddingHorizontal: Responsive.widthPx(5),

@@ -120,6 +120,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 50,
     resizeMode: "contain",
+    height:Responsive.heightPx(6),
+    width:Responsive.widthPx(14)
   },
 
   logoutWrapper: {

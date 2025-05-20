@@ -70,7 +70,7 @@ const FavoriteListScreen = () => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 , backgroundColor:Colors.whiteColor}}>
       <View style={styles.wrapper}>
         <HeaderWithBack title="Wishlist Products" />
 

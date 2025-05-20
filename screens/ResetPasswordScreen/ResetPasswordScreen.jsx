@@ -1,6 +1,9 @@
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -89,97 +92,109 @@ const ResetPasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity onPress={goBack} style={styles.backWrapper}>
-        <Icon
-          name="arrow-left"
-          size={Responsive.font(7)}
-          color={Colors.blackColor}
-        />
-      </TouchableOpacity>
-
-      <View style={styles.imageWrapper}>
-        <Image source={ImagePicker.logoImage} style={styles.image} />
-      </View>
-
-      <View style={styles.loginInputWrapper}>
-        <CustomInputField
-          name="newPassword"
-          label="New Password"
-          value={formState.newPassword}
-          onTextChange={updateFormState}
-          placeholder="Enter new password"
-          error={!!formErrors.newPassword}
-          helperText={formErrors.newPassword}
-          leftIcon={
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} // adjust if you have header/navigation
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <TouchableOpacity onPress={goBack} style={styles.backWrapper}>
             <Icon
-              name="lock"
-              size={Responsive.font(5)}
-              color={Colors.blueColorText}
-            />
-          }
-          rightIcon={
-            <Icon
-              name={formState.isShowNewPassword ? "eye-off" : "eye"}
-              size={Responsive.font(5)}
+              name="arrow-left"
+              size={Responsive.font(7)}
               color={Colors.blackColor}
             />
-          }
-          onRightIconPress={() =>
-            updateFormState("isShowNewPassword", !formState.isShowNewPassword)
-          }
-          containerStyle={{ marginBottom: Responsive.heightPx(1.8) }}
-          secureTextEntry={formState.isShowNewPassword}
-          labelStyle={{ color: Colors.blackColor }}
-          inputStyle={{ borderColor: Colors.blackColor }}
-        />
+          </TouchableOpacity>
 
-        <View>
-          <CustomInputField
-            name="confirmPassword"
-            label="Confirm Password"
-            value={formState.confirmPassword}
-            onTextChange={updateFormState}
-            placeholder="Enter confirm password"
-            error={!!formErrors.confirmPassword}
-            helperText={formErrors.confirmPassword}
-            leftIcon={
-              <Icon
-                name="lock"
-                size={Responsive.font(5)}
-                color={Colors.blueColorText}
-              />
-            }
-            rightIcon={
-              <Icon
-                name={formState.isShowConfirmPassword ? "eye-off" : "eye"}
-                size={Responsive.font(5)}
-                color={Colors.blackColor}
-              />
-            }
-            onRightIconPress={() =>
-              updateFormState(
-                "isShowConfirmPassword",
-                !formState.isShowConfirmPassword
-              )
-            }
-            containerStyle={{ marginBottom: Responsive.heightPx(1.8) }}
-            secureTextEntry={formState.isShowConfirmPassword}
-            labelStyle={{ color: Colors.blackColor }}
-            inputStyle={{ borderColor: Colors.blackColor }}
-          />
-        </View>
-
-        {formState.loading ? (
-          <Loader visible={formState.loading} />
-        ) : (
-          <View style={styles.buttonContainer}>
-            <ButtonComponent
-              title={commonEntities.ResetPassword}
-              onPress={handlePasswordReset}
-            />
+          <View style={styles.imageWrapper}>
+            <Image source={ImagePicker.logoImage} style={styles.image} />
           </View>
-        )}
-      </View>
+
+          <View style={styles.loginInputWrapper}>
+            <CustomInputField
+              name="newPassword"
+              label="New Password"
+              value={formState.newPassword}
+              onTextChange={updateFormState}
+              placeholder="Enter new password"
+              error={!!formErrors.newPassword}
+              helperText={formErrors.newPassword}
+              leftIcon={
+                <Icon
+                  name="lock"
+                  size={Responsive.font(5)}
+                  color={Colors.blueColorText}
+                />
+              }
+              rightIcon={
+                <Icon
+                  name={formState.isShowNewPassword ? "eye-off" : "eye"}
+                  size={Responsive.font(5)}
+                  color={Colors.blackColor}
+                />
+              }
+              onRightIconPress={() =>
+                updateFormState("isShowNewPassword", !formState.isShowNewPassword)
+              }
+              containerStyle={{ marginBottom: Responsive.heightPx(1.8) }}
+              secureTextEntry={formState.isShowNewPassword}
+              labelStyle={{ color: Colors.blackColor }}
+              inputStyle={{ borderColor: Colors.blackColor }}
+            />
+
+            <View>
+              <CustomInputField
+                name="confirmPassword"
+                label="Confirm Password"
+                value={formState.confirmPassword}
+                onTextChange={updateFormState}
+                placeholder="Enter confirm password"
+                error={!!formErrors.confirmPassword}
+                helperText={formErrors.confirmPassword}
+                leftIcon={
+                  <Icon
+                    name="lock"
+                    size={Responsive.font(5)}
+                    color={Colors.blueColorText}
+                  />
+                }
+                rightIcon={
+                  <Icon
+                    name={formState.isShowConfirmPassword ? "eye-off" : "eye"}
+                    size={Responsive.font(5)}
+                    color={Colors.blackColor}
+                  />
+                }
+                onRightIconPress={() =>
+                  updateFormState(
+                    "isShowConfirmPassword",
+                    !formState.isShowConfirmPassword
+                  )
+                }
+                containerStyle={{ marginBottom: Responsive.heightPx(1.8) }}
+                secureTextEntry={formState.isShowConfirmPassword}
+                labelStyle={{ color: Colors.blackColor }}
+                inputStyle={{ borderColor: Colors.blackColor }}
+              />
+            </View>
+
+            {formState.loading ? (
+              <Loader visible={formState.loading} />
+            ) : (
+              <View style={styles.buttonContainer}>
+                <ButtonComponent
+                  title={commonEntities.ResetPassword}
+                  onPress={handlePasswordReset}
+                />
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -192,8 +207,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.whiteColor,
   },
   backWrapper: {
-    marginVertical: Responsive.heightPx(3),
+    marginVertical: Responsive.heightPx(2),
     marginHorizontal: Responsive.widthPx(3),
+
   },
   loginInputWrapper: {
     paddingHorizontal: Responsive.widthPx(5),
