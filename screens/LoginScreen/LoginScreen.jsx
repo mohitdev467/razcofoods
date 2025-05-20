@@ -2,6 +2,7 @@ import {
   Alert,
   Image,
   ImageBackground,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -223,6 +224,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: Responsive.widthPx(2),
+    marginTop:Platform.OS === "ios" && Responsive.heightPx(-5)
   },
   imageWrapper: {
     justifyContent: "center",

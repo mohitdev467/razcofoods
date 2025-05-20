@@ -1,6 +1,7 @@
 import { showMessage } from "react-native-flash-message";
 import { Colors } from "../theme/colors";
 import Responsive from "../ResponsiveDimensions/Responsive";
+import { Platform } from "react-native";
 
 const errorHandler = (error) => {
   const errorMessage = error?.response?.data?.message || error;
@@ -16,7 +17,7 @@ const errorHandler = (error) => {
       backgroundColor: Colors.errorColor,
       borderRadius: 10,
       padding: 15,
-      marginTop:Responsive.heightPx(3)
+      marginTop:Platform.OS === "ios" ? Responsive.heightPx(0) : Responsive.heightPx(3)
       
     },
     titleStyle: {

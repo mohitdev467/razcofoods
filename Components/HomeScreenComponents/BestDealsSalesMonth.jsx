@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
 import { Colors } from "../../helpers/theme/colors";
@@ -76,15 +76,14 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     borderRadius: 20,
     position: "relative",
-
     overflow: "hidden",
   },
   image: {
     width: "100%",
-    height: Responsive.heightPx(35),
+    height: Platform.OS ==="ios" ? Responsive.heightPx(35) : Responsive.heightPx(35),
     borderRadius: 10,
     resizeMode: "cover",
-    padding: Responsive.widthPx(20),
+    padding:Platform.OS ==="ios" ? Responsive.heightPx(0) : Responsive.widthPx(20),
     backgroundColor: Colors.blackColor,
   },
   overlay: {

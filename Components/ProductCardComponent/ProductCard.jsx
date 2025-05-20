@@ -126,6 +126,11 @@ const styles = StyleSheet.create({
     position: "relative",
     marginVertical: rh(3),
     marginHorizontal: rw(2),
+    shadowColor: Colors.blackColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    borderRadius: 10,
   },
   image: {
     width: Responsive.widthPx(25),

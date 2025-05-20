@@ -1,6 +1,7 @@
 import { showMessage } from "react-native-flash-message";
 import { Colors } from "../theme/colors";
 import Responsive from "../ResponsiveDimensions/Responsive";
+import { Platform } from "react-native";
 
 const successHandler = (response, position = "top") => {
   const successMessage = response?.data?.message || response;
@@ -17,7 +18,7 @@ const successHandler = (response, position = "top") => {
       backgroundColor: Colors.greenColor,
       borderRadius: 10,
       padding: 15,
-      marginTop:Responsive.heightPx(3)
+      marginTop:Platform.OS === "ios" ? Responsive.heightPx(0) : Responsive.heightPx(3)
     },
     titleStyle: {
       fontSize: Responsive.font(4),

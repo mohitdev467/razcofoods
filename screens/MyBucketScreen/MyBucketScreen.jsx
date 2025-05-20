@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Platform,
 } from "react-native";
 import {
   responsiveWidth as rw,
@@ -236,6 +237,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: rw(4),
     borderBottomWidth: 1,
     borderColor: "#eee",
+    marginTop:Platform.OS === 'ios' && Responsive.heightPx(-5)
+    
   },
   headerTitle: {
     fontSize: rf(2.5),
@@ -262,6 +265,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#eee",
     paddingBottom: rh(1.5),
+    
   },
   overlayWrapper: {
     justifyContent: "center",

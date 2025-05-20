@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/Feather";
 import useGoBack from "../../helpers/Hooks/useGoBack";
@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
     borderColor: "#eee",
     backgroundColor: Colors.whiteColor,
     paddingHorizontal: Responsive.widthPx(4),
+   marginTop:Platform.OS ==="ios" && Responsive.heightPx(-5)
+    
   },
   headerTitle: {
     fontSize: Responsive.font(5),

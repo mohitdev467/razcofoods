@@ -1,5 +1,6 @@
 import {
   FlatList,
+  Platform,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: rh(1),
     paddingHorizontal: rw(3.5),
-    borderWidth: 0.1,
+    borderWidth:Platform.OS ==="ios" ? 0.3 : 0.1,
     borderRadius: rw(3),
     alignItems: "center",
     justifyContent: "center",

@@ -8,10 +8,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import CommonHeader from "../../Components/CommonComponents/CommonHeader";
 import { Colors } from "../../helpers/theme/colors";
-import SearchInput from "../../Components/CommonComponents/SearchInputField";
-import { commonEntities } from "../../Utilities/CommonEntities/CommonEntities";
 import SliderComponent from "../../Components/SliderComponent/SliderComponent";
-import { homeSliderData } from "../../constants/CommonContent/CommonContent";
 import WeeklyDealComponent from "../../Components/HomeScreenComponents/WeeklyDeal";
 import FootLoveToEat from "../../Components/HomeScreenComponents/FoodLoveToEat";
 import BestSellerGrocery from "../../Components/HomeScreenComponents/BestSellerGrocery";

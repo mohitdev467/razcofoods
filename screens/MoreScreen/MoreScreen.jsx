@@ -1,4 +1,5 @@
 import {
+  Platform,
    ScrollView,
   StyleSheet,
   Text,
@@ -162,6 +163,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginTop:Platform.OS ==="ios" && Responsive.heightPx(-5),
+  
     paddingVertical: Responsive.heightPx(2),
   },
 

@@ -1,0 +1,32 @@
+{
+  "cli": {
+    "version": ">= 16.4.1",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+   "appstore": {
+      "distribution": "store",
+      "ios": {},
+      "android": {
+        "buildType": "app-bundle"
+      }
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6745822069"
+      }
+    }
+  }
+}

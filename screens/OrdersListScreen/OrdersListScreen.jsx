@@ -249,15 +249,18 @@ const styles = StyleSheet.create({
     marginBottom: rh(2.5),
     borderRadius: rw(4),
     overflow: "hidden",
-    elevation: 6,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
+    elevation: 5,
+    shadowColor: Colors.blackColor,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    borderRadius: 10,
   },
   cardGradient: {
     padding: rw(4.5),
+    
   },
+
   cardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",

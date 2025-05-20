@@ -1,6 +1,7 @@
 import {
   Image,
   ImageBackground,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -38,11 +39,7 @@ const PersonalInfoScreen = () => {
 
   return (
     <>
-      <StatusBar
-        style="light"
-        backgroundColor={Colors.primaryButtonColor}
-        translucent={true}
-      />
+   
       <SafeAreaView style={styles.container}>
         <ImageBackground
           source={ImagePicker.updateProfileBgBackImage}
@@ -104,8 +101,8 @@ export default PersonalInfoScreen;
 
 const styles = StyleSheet.create({
   loaderContainer: {
-    marginTop: Responsive.heightPx(3),
-    height: Responsive.heightPx(5),
+    marginTop:  Responsive.heightPx(3),
+    height: Responsive.heightPx(0),
   },
   container: {
     flex: 1,
@@ -114,7 +111,7 @@ const styles = StyleSheet.create({
 
   bgBackBanner: {
     height: Responsive.heightPx(45),
-    marginTop: Responsive.heightPx(2),
+    marginTop: Platform.OS === "ios" ? Responsive.heightPx(-5) : Responsive.heightPx(1),
 
     position: "relative",
   },
@@ -128,7 +125,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: Responsive.heightPx(2),
-    marginTop: Responsive.heightPx(2),
+    marginTop: Responsive.heightPx(1),
     gap: Responsive.widthPx(8),
   },
 

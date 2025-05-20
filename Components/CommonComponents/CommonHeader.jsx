@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useState } from "react";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
 import { useNavigation } from "@react-navigation/native";
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: Responsive.heightPx(0.2),
     paddingHorizontal: Responsive.widthPx(3),
+    marginTop:Platform.OS ==="ios" && Responsive.heightPx(-5)
   },
   logoWrapper: {
     height: Responsive.heightPx(7),

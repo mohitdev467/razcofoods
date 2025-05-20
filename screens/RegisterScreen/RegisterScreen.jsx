@@ -1,6 +1,7 @@
 import {
   Image,
   ImageBackground,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -266,6 +267,8 @@ const styles = StyleSheet.create({
   backWrapper: {
     marginVertical: Responsive.heightPx(3),
     marginHorizontal: Responsive.widthPx(3),
+        marginTop:Platform.OS === "ios" && Responsive.heightPx(-5)
+    
   },
   imageWrapper: {
     justifyContent: "center",
