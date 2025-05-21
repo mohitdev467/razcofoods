@@ -183,10 +183,7 @@ const PersonalInfoScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        keyboardShouldPersistTaps="handled"
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
+      
         <ImageBackground source={ImagePicker.updateProfileBgBackImage} style={styles.bgBackBanner}>
           <ImageBackground
             source={ImagePicker.updateProfileBgFrontImage}
@@ -223,6 +220,12 @@ const PersonalInfoScreen = () => {
             </View>
           </ImageBackground>
         </ImageBackground>
+
+
+        <ScrollView
+        keyboardShouldPersistTaps="handled"
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
 
         <View style={styles.loginInputWrapper}>
           <CustomInputField
@@ -359,6 +362,7 @@ const styles = StyleSheet.create({
   loginInputWrapper: {
     paddingHorizontal: Responsive.widthPx(5),
     marginTop: Responsive.heightPx(0),
+    marginBottom:Responsive.heightPx(5)
   },
   dropdownStyle: {
     backgroundColor: Colors.whiteColor,
@@ -382,8 +386,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   buttonStyle: {
-    marginBottom: Responsive.heightPx(4),
-    marginVertical: Responsive.heightPx(4),
+    marginBottom: Responsive.heightPx(10),
+    marginTop: Responsive.heightPx(4),
   },
 
   imageWrapper: {
