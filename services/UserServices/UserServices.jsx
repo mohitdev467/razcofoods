@@ -4,14 +4,21 @@ import axiosInstance, { API_BASE_URL } from "../Api/axiosInstance";
 import { commonEntities } from "../../Utilities/CommonEntities/CommonEntities";
 
 export const UpdateUserProfile = async (id, data) => {
+  console.log("FormData sending to backend:", data);
+
   try {
     const response = await axiosInstance.put(
       API_ENDPOINTS.userUpdateProfile(id),
-      data
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   } catch (error) {
-    console.error(error);
+    console.error("Error updating profile:", error);
     throw error;
   }
 };

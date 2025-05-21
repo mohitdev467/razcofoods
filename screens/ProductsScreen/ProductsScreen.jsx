@@ -93,7 +93,7 @@ const ProductScreen = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ backgroundColor: "#fff" }}>
       <CommonHeader />
 
       {!showFilter && (

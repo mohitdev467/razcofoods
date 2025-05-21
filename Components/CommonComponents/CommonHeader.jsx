@@ -9,11 +9,15 @@ import { commonEntities } from "../../Utilities/CommonEntities/CommonEntities.js
 import LogoutModal from "../LogoutModal/LogoutModal.jsx";
 import useAuthStorage from "../../helpers/Hooks/useAuthStorage.jsx";
 import ModalComponent from "./ModalComponent.jsx";
+import useUserDetailsById from "../../helpers/Hooks/useUserDetailsById.jsx";
+import { IMAGE_BASE_URL } from "../../services/Api/axiosInstance.js";
 
 const CommonHeader = () => {
   const navigation = useNavigation();
   const [isLoginSignupModal, setIsLoginSignupModal] = useState(false);
   const { loginData } = useAuthStorage();
+  const { user } = useUserDetailsById(loginData?._id);
+
 
   return (
     <>
@@ -32,8 +36,8 @@ const CommonHeader = () => {
           >
             <Image
               source={
-                typeof loginData?.profileImage === "string"
-                  ? { uri: loginData.profileImage }
+                typeof user?.data?.profileImage === "string"
+                  ? { uri:`${IMAGE_BASE_URL}${user?.data?.profileImage}`}
                   : ImagePicker.PlaceholderImage
               }
               style={styles.logoutIcon}

@@ -5,7 +5,9 @@ import {
   View,
   StyleSheet,
   Image,
+  Platform,
   SafeAreaView,
+
 } from "react-native";
 import _ from "lodash";
 import { Colors } from "../../helpers/theme/colors";
@@ -14,14 +16,21 @@ import Icon from "react-native-vector-icons/Feather";
 import { bottomTabUtils } from "../../Utilities/BottomTabUtils/BottomTabUtils";
 import { useCart } from "../../helpers/Hooks/useCart";
 
+
 const BottomTabNavigations = ({ props, loginData }) => {
+
   const onPressDrawer = (key) => {
     props?.navigation?.jumpTo(key);
   };
   const { getTotalItems } = useCart();
   const total = getTotalItems();
   return (
-    <View>
+    <View
+      style={{
+        backgroundColor: Colors.whiteColor,
+      }}
+
+    >
       <View style={styles.container}>
         {bottomTabUtils &&
           bottomTabUtils.map((item, index) => {
@@ -60,7 +69,7 @@ const BottomTabNavigations = ({ props, loginData }) => {
             );
           })}
       </View>
-      <SafeAreaView style={styles.backgroundColor} />
+
     </View>
   );
 };
@@ -71,21 +80,19 @@ const styles = StyleSheet.create({
   shadow: {
     shadowOpacity: 0.05,
   },
-  backgroundColor: {
-    backgroundColor: Colors.whiteColor,
-  },
+
   container: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "baseline",
     justifyContent: "space-evenly",
     backgroundColor: Colors.whiteColor,
     elevation: 5,
     shadowColor: Colors.blackColor,
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 0.1 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
-    paddingBottom: Responsive.heightPx(1.5),
-
+    paddingTop: 0,
+    height:Platform.OS === "android" ? Responsive.heightPx(12) : Responsive.heightPx(8),
   },
   container1: {
     alignItems: "center",

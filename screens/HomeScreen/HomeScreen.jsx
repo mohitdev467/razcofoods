@@ -106,13 +106,13 @@ export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     backgroundColor: Colors.whiteColor,
   },
   loaderWrapper: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: Colors.whiteColor, // full-screen white bg
+    backgroundColor: Colors.whiteColor, 
   },
 });

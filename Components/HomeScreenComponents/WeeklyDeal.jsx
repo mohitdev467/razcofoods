@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "center",
     marginRight: Responsive.widthPx(4),
+    
   },
   image: {
     width: Responsive.widthPx(89),

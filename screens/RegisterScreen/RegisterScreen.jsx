@@ -85,7 +85,7 @@ const RegisterScreen = () => {
       await registerSchema.validate(formState, { abortEarly: false });
       updateFormState("loading", true);
       const result = await handleRegisterUser(payload);
-      if (result?.status === 201) {
+      if (result?.status === 201 || result?.status === 200) {
         successHandler(result.message);
         clearWishlist();
         clearCart();

@@ -51,7 +51,7 @@ export default function App() {
           <StatusBar
             translucent={false}
             backgroundColor={Colors.primaryButtonColor}
-            barStyle="light-content"
+            barStyle="dark-content"
           />
           <SafeAreaView style={styles.container}>
             <MainRoutes />

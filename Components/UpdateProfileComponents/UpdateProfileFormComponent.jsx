@@ -21,102 +21,25 @@ import {
   UpdateUserProfile,
 } from "../../services/UserServices/UserServices";
 
-const UpdateProfileFormComponent = ({ userData }) => {
-  const { loginData } = useAuthStorage();
-
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    gender: null,
-    image: null,
-    mobile: null,
-    countryCode: "US",
-    visible: false,
-  });
-
-  const [formErrors, setFormErrors] = useState({});
-  const [refreshing, setRefreshing] = useState(false);
-  const [items, setItems] = useState([
-    { label: "Male", value: "MALE" },
-    { label: "Female", value: "FEMALE" },
-    { label: "Other", value: "OTHER" },
-  ]);
-
-  const updateFormState = (name, value) => {
-    setFormState((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-
-    if (formErrors[name]) {
-      setFormErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: "",
-      }));
-    }
-  };
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+const UpdateProfileFormComponent = ({ formState,
+  formErrors,
+  items,
+  updateFormState,
+  onRefresh,
+  refreshing,
+  handleSubmit, }) => {
 
   const handleChangeText = (field, value) => {
     updateFormState(field, value);
   };
 
   const handlePhoneChange = (val) => {
-    updateFormState("mobile", val);
-  };
-
-  const userDaata = async () => {
-    setFormState((prevState) => ({
-      ...prevState,
-      name: userData?.name || "",
-      email: userData?.email || "",
-      mobile: userData?.loginPhone || "",
-      gender: userData?.gender,
-      image: userData?.avatar || null,
-    }));
-  };
-
-  const handleSubmit = async () => {
-    try {
-      await profileValidationsSchema.validate(formState, { abortEarly: false });
-
-      const payload = {
-        _id: loginData?._id,
-        ...formState,
-      };
-
-      const data = await UpdateUserProfile(loginData._id, payload);
-      if (data?.status === 200) {
-        successHandler(data?.message, "bottom");
-        onRefresh();
-        updateFormState("image", null);
-      }
-    } catch (validationErrors) {
-      if (validationErrors.inner) {
-        const errors = {};
-        validationErrors.inner.forEach((err) => {
-          errors[err.path] = err.message;
-        });
-        setFormErrors(errors);
-      }
-    }
+    updateFormState("phone", val);
   };
 
   const handleGenderSelect = (value) => {
     updateFormState("gender", value);
   };
-
-  useEffect(() => {
-    if (loginData) {
-      userDaata();
-    }
-  }, [loginData]);
 
   return (
     <ScrollView
@@ -156,11 +79,11 @@ const UpdateProfileFormComponent = ({ userData }) => {
 
         <PhoneNumberInput
           label="Phone Number"
-          defaultValue={userData?.loginPhone || formState?.mobile}
+          defaultValue={userData?.loginPhone || formState?.phone}
           defaultCode={formState.countryCode}
           onChangePhone={handlePhoneChange}
-          error={!!formErrors.mobile}
-          errorMessage={formErrors.mobile}
+          error={!!formErrors.phone}
+          errorMessage={formErrors.phone}
         />
         <SelectDropdown
           options={items}

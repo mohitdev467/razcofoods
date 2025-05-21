@@ -69,7 +69,7 @@ export const profileValidationsSchema = yup.object().shape({
     .min(2, "Name must be at least 2 characters")
     .max(30, "Name must be at most 30 characters"),
   email: yup.string().email("Invalid email").required("Email is required"),
-  mobile: yup
+  phone: yup
     .string()
     .required("Phone number is required")
     .min(7, "Phone number must be at least 7 digits")
