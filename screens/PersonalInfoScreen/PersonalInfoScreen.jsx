@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
   },
   bgBackBanner: {
     height: Responsive.heightPx(45),
-    marginTop: Platform.OS === "ios" ? Responsive.heightPx(0) : Responsive.heightPx(1),
+    marginTop: Platform.OS === "ios" ? Responsive.heightPx(0) : Responsive.heightPx(7),
   },
   frontBanner: {
     height: Responsive.heightPx(40),
