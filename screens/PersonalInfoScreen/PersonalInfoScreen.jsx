@@ -137,39 +137,40 @@ const PersonalInfoScreen = () => {
 
   const handleImageUpload = async () => {
     let imageData = null;
-
-    const chooseImage = async (pickerFunction) => {
-      imageData = await pickerFunction();
+  
+    const chooseImage = async () => {
+      imageData = await ImagePickerUtils.pickImageFromGallery();
       if (imageData) {
         updateFormState("profileImage", imageData);
       }
     };
-
+  
     if (Platform.OS === "ios") {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: ["Cancel", "Take Photo", "Choose from Library"],
+          options: ["Cancel", "Choose from Library"],
           cancelButtonIndex: 0,
         },
         async (buttonIndex) => {
-          if (buttonIndex === 1) await chooseImage(ImagePickerUtils.takePhotoWithCamera);
-          if (buttonIndex === 2) await chooseImage(ImagePickerUtils.pickImageFromGallery);
+          if (buttonIndex === 1) {
+            await chooseImage();
+          }
         }
       );
     } else {
       Alert.alert("Select Option", "", [
         {
-          text: "Take Photo",
-          onPress: async () => await chooseImage(ImagePickerUtils.takePhotoWithCamera),
+          text: "Choose from Library",
+          onPress: async () => await chooseImage(),
         },
         {
-          text: "Choose from Library",
-          onPress: async () => await chooseImage(ImagePickerUtils.pickImageFromGallery),
+          text: "Cancel",
+          style: "cancel",
         },
-        { text: "Cancel", style: "cancel" },
       ]);
     }
   };
+  
 
 
   if (loading) return (
@@ -181,7 +182,7 @@ const PersonalInfoScreen = () => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -217,9 +218,9 @@ const PersonalInfoScreen = () => {
 
             <View style={styles.userNameWrapper}>
               <Text style={styles.userNameStyle}>{`Name: ${user?.data?.name}`}</Text>
-            </View>
             <Text style={styles.emailUserText}>{`Gender: ${user?.data?.gender}`}</Text>
             <Text style={styles.emailUserText}>{`Email: ${user?.data?.email}`}</Text>
+            </View>
           </ImageBackground>
         </ImageBackground>
 
@@ -284,7 +285,7 @@ const PersonalInfoScreen = () => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -297,7 +298,7 @@ const styles = StyleSheet.create({
   },
   bgBackBanner: {
     height: Responsive.heightPx(45),
-    marginTop: Platform.OS === "ios" ? Responsive.heightPx(-5) : Responsive.heightPx(1),
+    marginTop: Platform.OS === "ios" ? Responsive.heightPx(0) : Responsive.heightPx(1),
   },
   frontBanner: {
     height: Responsive.heightPx(40),
@@ -308,7 +309,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: Responsive.widthPx(4),
     paddingVertical: Responsive.heightPx(2),
-    gap: Responsive.widthPx(8),
+    gap: Responsive.widthPx(5),
   },
   title: {
     fontFamily: "SemiBold",
@@ -317,7 +318,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     color: Colors.whiteColor,
-    fontSize: Responsive.font(4.5),
+    fontSize: Responsive.font(5),
   },
   profileImage: {
     height: Responsive.heightPx(12),
@@ -340,17 +341,18 @@ const styles = StyleSheet.create({
     color: Colors.primaryButtonColor,
   },
   userNameWrapper: {
-    flexDirection: "row",
+    flexDirection: "column",
+    alignItems:"flex-start",
     marginHorizontal: Responsive.widthPx(6),
     marginTop: Responsive.heightPx(7),
+    gap:Responsive.heightPx(1.5),
   },
   userNameStyle: {
     fontFamily: "SemiBold",
-    fontSize: Responsive.font(4.2),
+    fontSize: Responsive.font(4),
   },
   emailUserText: {
-    marginHorizontal: Responsive.widthPx(6),
-    fontSize: Responsive.font(3.5),
+    fontSize: Responsive.font(4),
     fontFamily: "SemiBold",
     marginVertical: Responsive.heightPx(0.5),
   },

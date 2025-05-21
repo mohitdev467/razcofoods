@@ -249,6 +249,9 @@ const RegisterScreen = () => {
               dropdownStyle={styles.dropdownStyle}
               error={!!formErrors.gender}
               errorMessage={formErrors.gender}
+              dropdownContainerStyle={styles.dropdownStyleContainer}
+              selectContainerStyle={styles.selectContainerStyle}
+
             />
 
             {formState.loading ? (
@@ -314,5 +317,7 @@ const styles = StyleSheet.create({
   dropdownStyle: {
     borderWidth: 1,
     borderColor: Colors.blackColor,
+    height:Responsive.heightPx(7)
   },
+  
 });
