@@ -229,7 +229,7 @@ const OrderSuccessScreen = () => {
                     { position: "relative", left: Responsive.widthPx(0) },
                   ]}
                 >
-                  ${redeemDiscount?.toFixed(2)} USD
+                  ${redeemDiscount?.toFixed(2)}
                 </Text>
               </View>
             }
