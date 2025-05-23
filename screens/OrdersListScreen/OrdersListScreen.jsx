@@ -82,6 +82,8 @@ const OrderListScreen = () => {
       (item) => item?.product?.productName
     );
 
+
+
     return (
       <TouchableOpacity
         style={styles.card}
@@ -99,8 +101,9 @@ const OrderListScreen = () => {
         >
           <View style={styles.cardHeader}>
             <Text style={styles.orderNumber}>{item.orderId}</Text>
-            <Text style={styles.totalAmount}>${item?.price?.toFixed(2)}</Text>
-          </View>
+            <Text style={styles.totalAmount}>
+  ${((item?.price || 0) - (item?.redeemedUSD || 0)).toFixed(2)}
+</Text>          </View>
 
           <View style={styles.detailRow}>
             <Icon name="store" size={rw(5)} color="#3b0764" />
@@ -134,6 +137,17 @@ const OrderListScreen = () => {
               <Text style={styles.value}>{productsNames?.join(", ")}</Text>
             </Text>
           </View>
+          {
+
+item?.redeemedUSD &&
+          <View style={styles.detailRow}>
+            <FeatherIcon name="dollar-sign" size={rw(5)} color="#3b0764" />
+            <Text style={styles.label}>
+              Redeem Points:{" "}
+              <Text style={styles.value}>${item?.redeemedUSD?.toFixed(2)}</Text>
+            </Text>
+          </View>
+  }
 
           <View style={styles.statusContainer}>
             <View style={[styles.statusBadge, { backgroundColor }]}>

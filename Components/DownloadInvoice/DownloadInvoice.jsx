@@ -11,7 +11,6 @@ const generateInvoiceHTML = (orderData) => {
     ?.map((item) => {
       const itemTotal = item?.product?.price * item?.quantity;
       subtotal += itemTotal;
-
       return `
         <tr>
           <td>${item?.product?.productName || "Product"}</td>
@@ -22,8 +21,8 @@ const generateInvoiceHTML = (orderData) => {
     })
     .join("");
 
-  const finalTotal = orderData?.price - discount;
-
+    const redemmedUsd = orderData?.redeemedUSD || 0;
+    const finalTotal = orderData?.price - discount - redemmedUsd;
   return `
   <html>
     <head>
@@ -68,6 +67,14 @@ const generateInvoiceHTML = (orderData) => {
             <td colspan="3" style="text-align:right;">Discount</td>
             <td style="text-align:right;">$${discount.toFixed(2)}</td>
           </tr>
+          ${
+            redemmedUsd > 0
+              ? `<tr class="totals">
+                   <td colspan="3" style="text-align:right;">Redeemed Points</td>
+                   <td style="text-align:right;">$${redemmedUsd.toFixed(2)}</td>
+                 </tr>`
+              : ""
+          }
           <tr class="totals">
             <td colspan="3" style="text-align:right;">Total</td>
             <td style="text-align:right;">$${finalTotal.toFixed(2)}</td>
