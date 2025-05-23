@@ -15,7 +15,6 @@ export const handleLoginUser = async (data) => {
       data,
       headers
     );
-    console.log("responseeeee", response.data);
     if (response.data?.status === 1) {
       return { success: true, data: response.data };
     } else {

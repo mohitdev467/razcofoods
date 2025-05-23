@@ -26,6 +26,7 @@ import { useNavigation } from "@react-navigation/native";
 import screenNames from "../../helpers/ScreenNames/screenNames";
 import { useCart } from "../../helpers/Hooks/useCart";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
+import { Colors } from "../../helpers/theme/colors";
 
 const ReviewOrderSection = ({
   cartData,
@@ -33,6 +34,9 @@ const ReviewOrderSection = ({
   selectedTimeSlot,
   selectedLocation,
   selectedMobileNumber,
+  redeemDiscount,
+  userPoints,
+
 }) => {
   const [promoCode, setPromoCode] = useState("");
   const { loginData } = useAuthStorage();
@@ -72,7 +76,7 @@ const ReviewOrderSection = ({
   const subtotal = calculateSubtotal();
 
   const discountAmount = (subtotal * couponDiscount) / 100;
-  const total = subtotal - discountAmount;
+  const total = subtotal - discountAmount - (redeemDiscount || 0);
 
   const handlePlaceOrder = async () => {
     if (!selectedMobileNumber || !selectedDate || !selectedTimeSlot) {
@@ -109,6 +113,9 @@ const ReviewOrderSection = ({
         },
         subTotal: subtotal,
         total: total,
+        redeemDiscount :redeemDiscount,
+        userPoints :userPoints,
+
       };
 
       const result = await handleCreateOrder(payload);
@@ -119,6 +126,8 @@ const ReviewOrderSection = ({
         naviagtion.navigate(screenNames.OrderSuccessScreen, {
           orderedData: result?.data,
           cartData: cartData,
+          redeemDiscount :redeemDiscount,
+          userPoints :userPoints,
         });
       } else {
         errorHandler(result?.message || "Something went wrong");
@@ -154,6 +163,7 @@ const ReviewOrderSection = ({
               {" "}
               ${(item.price * item.quantity).toFixed(2)}
             </Text>
+            
           </View>
         )}
       />
@@ -201,10 +211,19 @@ const ReviewOrderSection = ({
           ${discountAmount?.toFixed(2)}
         </Text>
       </View>
+      {redeemDiscount > 0 && (
+  <View style={styles.summaryRow}>
+  <Text style={styles.totalSubtotal}>Redemption</Text>
+  <Text style={[styles.totalSubtotal, { width: Responsive.widthPx(10) }]}>
+  ${redeemDiscount?.toFixed(2)}
+  </Text>
+</View>
+)}
       <View style={styles.summaryRow}>
         <Text style={styles.totalLabel}>Total</Text>
         <Text style={styles.totalLabel}>${total?.toFixed(2)}</Text>
       </View>
+     
 
       {/* Order Button */}
       <TouchableOpacity style={styles.orderButton} onPress={handlePlaceOrder}>
@@ -276,7 +295,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   applyButton: {
-    backgroundColor: "#0ABF75",
+    backgroundColor: Colors.primaryButtonColor,
     paddingVertical: rh(1.2),
     paddingHorizontal: rw(5),
     borderRadius: 8,
@@ -302,7 +321,7 @@ const styles = StyleSheet.create({
     fontSize: rf(2),
   },
   orderButton: {
-    backgroundColor: "#0ABF75",
+    backgroundColor:Colors.primaryButtonColor,
     padding: rh(1.5),
     alignItems: "center",
     borderRadius: 8,
@@ -328,6 +347,6 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   totalSubtotal: {
-    width: Responsive.widthPx(20),
+    width: Responsive.widthPx(25),
   },
 });

@@ -7,6 +7,7 @@ import {
   FlatList,
   ScrollView,
   Image,
+  SafeAreaView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/Feather";
@@ -20,15 +21,16 @@ import { useSubCategoriesByCategoryId } from "../../helpers/Hooks/useSubCategori
 import { IMAGE_BASE_URL } from "../../services/Api/axiosInstance";
 import { ImagePicker } from "../../helpers/ImageHelper/ImagePicker";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
-import { ActivityIndicator, Checkbox, RadioButton } from "react-native-paper";
+import { ActivityIndicator,  RadioButton } from "react-native-paper";
 import { Colors } from "../../helpers/theme/colors";
-import { SafeAreaView } from "react-native-safe-area-context";
+import CustomCheckbox from "../../Components/CheckoutScreenComponents/CustomCheckbox";
 
 const FilterScreen = ({ setShowFilter, setSelected, selected, products }) => {
   const [expanded, setExpanded] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const { categories, loading: loadingCategories } = useAllCategories();
   const [selectedLocal, setSelectedLocal] = useState([]);
+
 
   const { subcategories, loading, error } =
     useSubCategoriesByCategoryId(selectedCategoryId);
@@ -57,7 +59,7 @@ const FilterScreen = ({ setShowFilter, setSelected, selected, products }) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff", marginTop: 20 }}>
+    <SafeAreaView style={{ backgroundColor: Colors.whiteColor, marginTop: 20 }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={goBack}>
@@ -100,7 +102,7 @@ const FilterScreen = ({ setShowFilter, setSelected, selected, products }) => {
         <View style={styles.selectedContainer}>
           {selectedLocal?.map((item) => (
             <View key={item} style={styles.tag}>
-              <Text style={styles.itemStyle}>{item}</Text>
+              <Text style={[styles.itemStyle, {textTransform:"capitalize"}]}>{item}</Text>
               <TouchableOpacity onPress={() => toggleSub(item)}>
                 <Text
                   style={{
@@ -146,11 +148,11 @@ const FilterScreen = ({ setShowFilter, setSelected, selected, products }) => {
                     <Text style={styles.categoryTitle}>{category.name}</Text>
                     {(subcategories?.length || 0) > 0 ? (
                       expanded === category._id ? (
-                        <Icon name="chevron-up" size={rh(3)} color="#000" />
+                        <Icon name="chevron-up" size={Responsive.font(5)} color="#000" />
                       ) : (
-                        <Icon name="chevron-down" size={rh(3)} color="#000" />
+                        <Icon name="chevron-down" size={Responsive.font(5)} color="#000" />
                       )
-                    ) : null}
+                    ) : <Icon name="chevron-down" size={Responsive.font(5)} color="#000" />}
                   </TouchableOpacity>
 
                   {expanded === category._id && (
@@ -178,13 +180,9 @@ const FilterScreen = ({ setShowFilter, setSelected, selected, products }) => {
                                 <Text style={styles.subCategoryNameStyle}>
                                   {item.subcategoryName}
                                 </Text>
-                                <Checkbox
-                                  status={
-                                    selectedLocal.includes(item.slug)
-                                      ? "checked"
-                                      : "unchecked"
-                                  }
-                                  onPress={() => toggleSub(item.slug)}
+                                <CustomCheckbox
+                                  checked={selectedLocal.includes(item.slug)}
+                                  onToggle={() => toggleSub(item.slug)}
                                   color={Colors.primaryButtonColor}
                                 />
                               </TouchableOpacity>
@@ -199,13 +197,9 @@ const FilterScreen = ({ setShowFilter, setSelected, selected, products }) => {
                           <Text style={styles.subCategoryNameStyle}>
                             {category.name}
                           </Text>
-                          <Checkbox
-                            status={
-                              selectedLocal.includes(category.slug)
-                                ? "checked"
-                                : "unchecked"
-                            }
-                            onPress={() => toggleSub(category.slug)}
+                          <CustomCheckbox
+                            checked={selectedLocal.includes(category.slug)}
+                            onToggle={() => toggleSub(category.slug)}
                             color={Colors.primaryButtonColor}
                           />
                         </TouchableOpacity>
@@ -276,7 +270,7 @@ const styles = StyleSheet.create({
   actionButtons: {
     backgroundColor: Colors.primaryButtonColor,
     paddingHorizontal: Responsive.widthPx(4),
-    paddingVertical: Responsive.heightPx(1),
+    paddingVertical: Responsive.heightPx(1.5),
     borderRadius: 50,
   },
 
@@ -292,7 +286,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderColor: Colors.primaryButtonColor,
     paddingHorizontal: rw(3),
-    paddingVertical: rh(0.5),
+    paddingVertical: Responsive.heightPx(1),
     margin: 5,
     borderRadius: 20,
     backgroundColor: Colors.primaryButtonColor,

@@ -1,5 +1,5 @@
 export const ImagePicker = {
-  splashScreenImage: require("../../assets/Banner.png"),
+  splashScreenImage: require("../../assets/splashScreen.png"),
   logoImage: require("../../assets/Images/logo.png"),
   loginScreenImage: require("../../assets/Images/Discount-Bannar.png"),
   banner1: require("../../assets/Images/Corousel-banners/1.png"),

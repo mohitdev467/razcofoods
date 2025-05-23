@@ -5,21 +5,15 @@ import {
   Text,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Colors } from "../../helpers/theme/colors";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
 import { commonContent } from "../../constants/CommonContent/CommonContent";
-import useAuthStorage from "../../helpers/Hooks/useAuthStorage";
-import { profileValidationsSchema } from "../../helpers/Validations/ValidationSchema";
 import CustomInputField from "../CommonComponents/CustomInputField";
 import ButtonComponent from "../CommonComponents/ButtonComponent";
 import SelectDropdown from "../CommonComponents/SelectDropdown";
-import successHandler from "../../helpers/Notifications/SuccessHandler";
 import PhoneNumberInput from "../CommonComponents/PhoneNumberInput";
-import {
-  getUserById,
-  UpdateUserProfile,
-} from "../../services/UserServices/UserServices";
+
 
 const UpdateProfileFormComponent = ({ formState,
   formErrors,

@@ -139,6 +139,7 @@ const ProductScreen = () => {
                         style={{
                           color: Colors.whiteColor,
                           width: Responsive.widthPx(13),
+                          textTransform:"capitalize"
                         }}
                       >
                         {item}
@@ -266,14 +267,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: Responsive.heightPx(2),
     marginRight: Responsive.widthPx(3),
-    width: Responsive.widthPx(70),
+    width: Responsive.widthPx(75),
   },
   tag: {
     flexDirection: "row",
     borderWidth: 1,
     borderColor: Colors.whiteColor,
-    paddingHorizontal: rw(3),
-    paddingVertical: rh(0.5),
+    paddingHorizontal: Responsive.widthPx(2),
+    paddingVertical: Responsive.heightPx(1),
     margin: rw(1),
     borderRadius: 20,
     backgroundColor: Colors.primaryButtonColor,

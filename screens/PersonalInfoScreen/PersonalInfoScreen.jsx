@@ -11,6 +11,8 @@ import {
   Alert,
   ScrollView,
   RefreshControl,
+  KeyboardAvoidingView,
+  SafeAreaView,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -21,7 +23,6 @@ import { commonContent } from "../../constants/CommonContent/CommonContent";
 import { ImagePicker } from "../../helpers/ImageHelper/ImagePicker";
 import { StatusBar } from "expo-status-bar";
 import useAuthStorage from "../../helpers/Hooks/useAuthStorage";
-import { updateProfileContent } from "../../Utilities/CommonUtils/CommonUtils";
 import useUserDetailsById from "../../helpers/Hooks/useUserDetailsById";
 import { UpdateUserProfile } from "../../services/UserServices/UserServices";
 import * as ImagePickerUtils from "../../Components/CommonComponents/ImageUploader";
@@ -32,14 +33,12 @@ import PhoneNumberInput from "../../Components/CommonComponents/PhoneNumberInput
 import Loader from "../../Components/CommonComponents/Loader";
 import { profileValidationsSchema } from "../../helpers/Validations/ValidationSchema";
 import successHandler from "../../helpers/Notifications/SuccessHandler";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { IMAGE_BASE_URL } from "../../services/Api/axiosInstance";
 
 const PersonalInfoScreen = () => {
   const goBack = useGoBack();
   const { loginData } = useAuthStorage();
   const { user, loading } = useUserDetailsById(loginData?._id);
-
 
 
   const [formState, setFormState] = useState({
@@ -92,14 +91,14 @@ const PersonalInfoScreen = () => {
   const handleSubmit = async () => {
     try {
       await profileValidationsSchema.validate(formState, { abortEarly: false });
-  
+
       const formData = new FormData();
-  
+
       formData.append("name", formState.name);
       formData.append("email", formState.email);
       formData.append("phone", formState.phone);
       formData.append("gender", formState.gender);
-  
+
       if (formState.profileImage?.uri || typeof formState.profileImage === 'string') {
         const imageUri = formState.profileImage?.uri || formState.profileImage;
         formData.append("profileImage", {
@@ -110,7 +109,7 @@ const PersonalInfoScreen = () => {
       }
 
       console.log("form dataaa", formData)
-  
+
       const data = await UpdateUserProfile(loginData._id, formData);
       if (data?.status === 200) {
         successHandler(data?.message, "top");
@@ -137,14 +136,14 @@ const PersonalInfoScreen = () => {
 
   const handleImageUpload = async () => {
     let imageData = null;
-  
+
     const chooseImage = async () => {
       imageData = await ImagePickerUtils.pickImageFromGallery();
       if (imageData) {
         updateFormState("profileImage", imageData);
       }
     };
-  
+
     if (Platform.OS === "ios") {
       ActionSheetIOS.showActionSheetWithOptions(
         {
@@ -170,7 +169,7 @@ const PersonalInfoScreen = () => {
       ]);
     }
   };
-  
+
 
 
   if (loading) return (
@@ -182,113 +181,125 @@ const PersonalInfoScreen = () => {
 
 
   return (
-    <View style={styles.container}>
-      
-        <ImageBackground source={ImagePicker.updateProfileBgBackImage} style={styles.bgBackBanner}>
-          <ImageBackground
-            source={ImagePicker.updateProfileBgFrontImage}
-            style={styles.frontBanner}
-            tintColor={Colors.primaryButtonColor}
+    <>
+      <View style={styles.container}>
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} 
+        >
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+
           >
-            <View style={styles.headerContainerForBack}>
-              <TouchableOpacity onPress={goBack}>
-                <Icon name="arrow-left" style={styles.icon} />
-              </TouchableOpacity>
-              <Text style={styles.title}>{commonContent.updateProfileHeading}</Text>
-            </View>
 
-            <View style={styles.imageWrapper}>
-              <Image
-                source={
-                  formState?.profileImage?.uri
-                    ? { uri: formState.profileImage.uri }
-                    : user?.data?.profileImage
-                    ? { uri: `${IMAGE_BASE_URL}${user.data.profileImage}` }
-                    : ImagePicker.PlaceholderImage
-                }
-                style={styles.profileImage}
+            <ImageBackground source={ImagePicker.updateProfileBgBackImage} style={styles.bgBackBanner}>
+              <ImageBackground
+                source={ImagePicker.updateProfileBgFrontImage}
+                style={styles.frontBanner}
+                tintColor={Colors.primaryButtonColor}
+              >
+                <View style={styles.headerContainerForBack}>
+                  <TouchableOpacity onPress={goBack}>
+                    <Icon name="arrow-left" style={styles.icon} />
+                  </TouchableOpacity>
+                  <Text style={styles.title}>{commonContent.updateProfileHeading}</Text>
+                </View>
+
+                <View style={styles.imageWrapper}>
+                  <Image
+                    source={
+                      formState?.profileImage?.uri
+                        ? { uri: formState.profileImage.uri }
+                        : user?.data?.profileImage
+                          ? { uri: `${IMAGE_BASE_URL}${user.data.profileImage}` }
+                          : ImagePicker.PlaceholderImage
+                    }
+                    style={styles.profileImage}
+                  />
+                  <TouchableOpacity onPress={handleImageUpload} style={styles.cameraWrapper}>
+                    <Icon name="camera" style={styles.cameraIcon} />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.userNameWrapper}>
+                  <Text style={styles.userNameStyle}>{`Name: ${user?.data?.name}`}</Text>
+                  <Text style={styles.emailUserText}>{`Gender: ${user?.data?.gender}`}</Text>
+                  <Text style={styles.emailUserText}>{`Email: ${user?.data?.email}`}</Text>
+                </View>
+              </ImageBackground>
+            </ImageBackground>
+
+
+
+
+            <View style={styles.loginInputWrapper}>
+              <CustomInputField
+                name="name"
+                label="Full Name"
+                value={formState.name}
+                onTextChange={handleChangeText}
+                placeholder="Enter Full Name"
+                error={!!formErrors.name}
+                helperText={formErrors.name}
+                containerStyle={styles.containerStyle}
+                mainContainerStyle={styles.mainContainer}
+                labelStyle={styles.labelStyle}
+                inputStyle={styles.inputStyle}
               />
-              <TouchableOpacity onPress={handleImageUpload} style={styles.cameraWrapper}>
-                <Icon name="camera" style={styles.cameraIcon} />
-              </TouchableOpacity>
+
+              <CustomInputField
+                name="email"
+                label="Email"
+                value={formState.email}
+                onTextChange={handleChangeText}
+                placeholder="Enter Email"
+                error={!!formErrors.email}
+                helperText={formErrors.email}
+                containerStyle={styles.containerStyle}
+                mainContainerStyle={styles.mainContainer}
+                labelStyle={styles.labelStyle}
+                inputStyle={styles.inputStyle}
+              />
+
+              <PhoneNumberInput
+                label="Phone Number"
+                defaultValue={user?.data?.loginPhone || formState.phone}
+                defaultCode={formState.countryCode}
+                onChangePhone={handlePhoneChange}
+                error={!!formErrors.phone}
+                errorMessage={formErrors.phone}
+              />
+
+              <SelectDropdown
+                options={items}
+                value={formState?.gender}
+                label="Gender"
+                setItems={setItems}
+                placeholder={"Select gender"}
+                onChangeValue={handleGenderSelect}
+                dropdownStyle={styles.dropdownStyle}
+                dropdownContainerStyle={styles.dropdownStyleContainer}
+                selectContainerStyle={styles.selectContainerStyle}
+              />
+              {formErrors.gender && (
+                <Text style={styles.errorText}>{formErrors.gender}</Text>
+              )}
+
+              <ButtonComponent
+                title={commonContent.updateProfileHeading}
+                onPress={handleSubmit}
+                style={styles.buttonStyle}
+
+              />
             </View>
-
-            <View style={styles.userNameWrapper}>
-              <Text style={styles.userNameStyle}>{`Name: ${user?.data?.name}`}</Text>
-            <Text style={styles.emailUserText}>{`Gender: ${user?.data?.gender}`}</Text>
-            <Text style={styles.emailUserText}>{`Email: ${user?.data?.email}`}</Text>
-            </View>
-          </ImageBackground>
-        </ImageBackground>
-
-
-        <ScrollView
-        keyboardShouldPersistTaps="handled"
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      >
-
-        <View style={styles.loginInputWrapper}>
-          <CustomInputField
-            name="name"
-            label="Full Name"
-            value={formState.name}
-            onTextChange={handleChangeText}
-            placeholder="Enter Full Name"
-            error={!!formErrors.name}
-            helperText={formErrors.name}
-            containerStyle={styles.containerStyle}
-            mainContainerStyle={styles.mainContainer}
-            labelStyle={styles.labelStyle}
-            inputStyle={styles.inputStyle}
-          />
-
-          <CustomInputField
-            name="email"
-            label="Email"
-            value={formState.email}
-            onTextChange={handleChangeText}
-            placeholder="Enter Email"
-            error={!!formErrors.email}
-            helperText={formErrors.email}
-            containerStyle={styles.containerStyle}
-            mainContainerStyle={styles.mainContainer}
-            labelStyle={styles.labelStyle}
-            inputStyle={styles.inputStyle}
-          />
-
-          <PhoneNumberInput
-            label="Phone Number"
-            defaultValue={user?.data?.loginPhone || formState.phone}
-            defaultCode={formState.countryCode}
-            onChangePhone={handlePhoneChange}
-            error={!!formErrors.phone}
-            errorMessage={formErrors.phone}
-          />
-
-          <SelectDropdown
-            options={items}
-            value={formState?.gender}
-            label="Gender"
-            setItems={setItems}
-            placeholder={"Select gender"}
-            onChangeValue={handleGenderSelect}
-            dropdownStyle={styles.dropdownStyle}
-            dropdownContainerStyle={styles.dropdownStyleContainer}
-            selectContainerStyle={styles.selectContainerStyle}
-          />
-          {formErrors.gender && (
-            <Text style={styles.errorText}>{formErrors.gender}</Text>
-          )}
-
-          <ButtonComponent
-            title={commonContent.updateProfileHeading}
-            onPress={handleSubmit}
-            style={styles.buttonStyle}
-
-          />
-        </View>
-      </ScrollView>
-    </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
+    </>
   );
 };
 
@@ -335,20 +346,20 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     left: Responsive.widthPx(13),
-    backgroundColor: Colors.whiteColor,
+    backgroundColor: Colors.primaryButtonColor,
     borderRadius: 30,
     padding: 8,
   },
   cameraIcon: {
-    fontSize: Responsive.font(7),
-    color: Colors.primaryButtonColor,
+    fontSize: Responsive.font(5),
+    color: Colors.whiteColor,
   },
   userNameWrapper: {
     flexDirection: "column",
-    alignItems:"flex-start",
+    alignItems: "flex-start",
     marginHorizontal: Responsive.widthPx(6),
     marginTop: Responsive.heightPx(7),
-    gap:Responsive.heightPx(1.5),
+    gap: Responsive.heightPx(1.5),
   },
   userNameStyle: {
     fontFamily: "SemiBold",
@@ -362,7 +373,7 @@ const styles = StyleSheet.create({
   loginInputWrapper: {
     paddingHorizontal: Responsive.widthPx(5),
     marginTop: Responsive.heightPx(0),
-    marginBottom:Responsive.heightPx(5)
+    marginBottom: Responsive.heightPx(5)
   },
   dropdownStyle: {
     backgroundColor: Colors.whiteColor,
@@ -402,8 +413,7 @@ const styles = StyleSheet.create({
 
   inputStyle: {
     fontFamily: "SemiBold",
-
-  }
+  },
 
 });
 

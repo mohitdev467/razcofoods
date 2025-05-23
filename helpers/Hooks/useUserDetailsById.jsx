@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getUserById } from "../../services/UserServices/UserServices";
 
 const useUserDetailsById = (id, shouldFetch = true) => {
@@ -6,26 +6,26 @@ const useUserDetailsById = (id, shouldFetch = true) => {
   const [loading, setLoading] = useState(!!shouldFetch);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  const fetchUser = useCallback(async () => {
     if (!id || !shouldFetch) return;
 
-    const fetchUser = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getUserById(id);
-        setUser(data);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getUserById(id);
+      setUser(data);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   }, [id, shouldFetch]);
 
-  return { user, loading, error };
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  return { user, loading, error, refetch: fetchUser };
 };
 
 export default useUserDetailsById;

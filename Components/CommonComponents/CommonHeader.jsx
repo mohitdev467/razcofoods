@@ -1,7 +1,7 @@
 import { Image, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import screenNames from "../../helpers/ScreenNames/screenNames.js";
 import { ImagePicker } from "../../helpers/ImageHelper/ImagePicker.jsx";
 import { Colors } from "../../helpers/theme/colors";
@@ -16,9 +16,15 @@ const CommonHeader = () => {
   const navigation = useNavigation();
   const [isLoginSignupModal, setIsLoginSignupModal] = useState(false);
   const { loginData } = useAuthStorage();
-  const { user } = useUserDetailsById(loginData?._id);
+  const { user, refetch } = useUserDetailsById(loginData?._id);
 
-
+  useFocusEffect(
+    useCallback(() => {
+      if (loginData?._id) {
+        refetch(); 
+      }
+    }, [loginData?._id, refetch])
+  ); 
   return (
     <>
       <View style={styles.container}>

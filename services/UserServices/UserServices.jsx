@@ -70,7 +70,6 @@ export const handleResetPassword = async (data) => {
 };
 
 export const handleCreateContact = async (id, data) => {
-  console.log("idddddd", id, data);
   try {
     const response = await axiosInstance.post(
       API_ENDPOINTS.userContact(id),

@@ -24,7 +24,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const OrderSuccessScreen = () => {
   useBackHandler(true);
   const route = useRoute();
-  const { orderedData, isFromOrderHistory, productsNames, cartData } =
+  const { orderedData, isFromOrderHistory, productsNames, cartData, redeemDiscount, userPoints } =
     route.params || {};
   const navigation = useNavigation();
 
@@ -79,10 +79,10 @@ const OrderSuccessScreen = () => {
                   • {name}
                 </Text>
               )) || (
-                <Text style={styles.mainHeading}>
-                  {commonEntities.notAvailable}
-                </Text>
-              ),
+                  <Text style={styles.mainHeading}>
+                    {commonEntities.notAvailable}
+                  </Text>
+                ),
             },
             {
               title: "PICKUP DATE & LOCATION",
@@ -122,7 +122,7 @@ const OrderSuccessScreen = () => {
             <View key={index} style={styles.cardBox}>
               <Text style={styles.headingTitle}>{item.title}</Text>
               {typeof item.value === "string" ||
-              typeof item.value === "number" ? (
+                typeof item.value === "number" ? (
                 <Text style={styles.mainHeading}>{item.value}</Text>
               ) : (
                 item.value
@@ -150,8 +150,8 @@ const OrderSuccessScreen = () => {
                 {(productsNames?.length
                   ? productsNames
                   : cartData?.map(
-                      (item) => item.description || item?.productName
-                    )
+                    (item) => item.description || item?.productName
+                  )
                 )?.join(", ") || commonEntities.notAvailable}
               </Text>
             </View>
@@ -219,6 +219,20 @@ const OrderSuccessScreen = () => {
                 ${orderedData?.discount?.toFixed(2)}
               </Text>
             </View>
+            {
+              redeemDiscount &&
+              <View style={styles.productWrapper}>
+                <Text style={styles.headingStyle}>Redeem Points</Text>
+                <Text
+                  style={[
+                    styles.headingStyle,
+                    { position: "relative", left: Responsive.widthPx(0) },
+                  ]}
+                >
+                  ${redeemDiscount?.toFixed(2)} USD
+                </Text>
+              </View>
+            }
 
             <View
               style={[
@@ -233,7 +247,10 @@ const OrderSuccessScreen = () => {
                   { position: "relative", left: Responsive.widthPx(0) },
                 ]}
               >
-                ${orderedData?.subTotal?.toFixed(2)}
+                ${(
+                  orderedData?.subTotal -
+                  (redeemDiscount || 0)
+                ).toFixed(2)}
               </Text>
             </View>
 
