@@ -36,12 +36,19 @@ axiosInstance.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
+    const status = error.response?.status;
+
+    if (status === 403) {
+      await AsyncStorage.removeItem("@loginData");
+    }
+
     console.error(
       "Axios response error:",
-      error.response?.status,
+      status,
       error.response?.data
     );
+
     return Promise.reject(error);
   }
 );

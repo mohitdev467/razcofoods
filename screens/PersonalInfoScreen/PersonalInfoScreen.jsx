@@ -41,6 +41,8 @@ const PersonalInfoScreen = () => {
   const { user, loading } = useUserDetailsById(loginData?._id);
 
 
+
+
   const [formState, setFormState] = useState({
     name: "",
     email: "",
@@ -108,7 +110,6 @@ const PersonalInfoScreen = () => {
         });
       }
 
-      console.log("form dataaa", formData)
 
       const data = await UpdateUserProfile(loginData._id, formData);
       if (data?.status === 200) {
@@ -170,15 +171,11 @@ const PersonalInfoScreen = () => {
     }
   };
 
-
-
   if (loading) return (
     <View style={{ marginTop: Responsive.heightPx(10) }}>
       <Loader visible={loading} />
     </View>
   );
-
-
 
   return (
     <>
@@ -186,7 +183,7 @@ const PersonalInfoScreen = () => {
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0} 
+          keyboardVerticalOffset={Platform.OS === "ios" ? 60 : 0}
         >
           <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
@@ -226,9 +223,11 @@ const PersonalInfoScreen = () => {
                 </View>
 
                 <View style={styles.userNameWrapper}>
-                  <Text style={styles.userNameStyle}>{`Name: ${user?.data?.name}`}</Text>
-                  <Text style={styles.emailUserText}>{`Gender: ${user?.data?.gender}`}</Text>
-                  <Text style={styles.emailUserText}>{`Email: ${user?.data?.email}`}</Text>
+                  <Text style={styles.userNameStyle}>{`Name: ${user?.data?.name || "Not available"}`}</Text>
+                  <Text style={styles.emailUserText}>{`Gender: ${user?.data?.gender || "Not available"}`}</Text>
+                  <Text style={styles.emailUserText}>{`Email: ${user?.data?.email || "Not available"}`}</Text>
+                 
+
                 </View>
               </ImageBackground>
             </ImageBackground>
@@ -368,7 +367,7 @@ const styles = StyleSheet.create({
   emailUserText: {
     fontSize: Responsive.font(4),
     fontFamily: "SemiBold",
-    marginVertical: Responsive.heightPx(0.5),
+    marginVertical: Responsive.heightPx(0),
   },
   loginInputWrapper: {
     paddingHorizontal: Responsive.widthPx(5),

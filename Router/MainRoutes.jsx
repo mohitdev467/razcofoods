@@ -42,6 +42,9 @@ export default function MainRoutes() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const { loginData } = useAuthStorage();
 
+
+
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);

@@ -24,12 +24,16 @@ import ModalComponent from "../../Components/CommonComponents/ModalComponent";
 import ButtonComponent from "../../Components/CommonComponents/ButtonComponent";
 import Loader from "../../Components/CommonComponents/Loader.jsx";
 import { SafeAreaView } from "react-native-safe-area-context";
+import useUserDetailsById from "../../helpers/Hooks/useUserDetailsById.jsx";
 
 const MoreScreen = () => {
   const navigation = useNavigation();
   const { clearLoginData, loginData } = useAuthStorage();
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUserDetailsById(loginData?._id);
+  const redeemPoints = user?.data?.points?.available || 0
+
 
   const moreScreenOptions = loginData?.verified
     ? moreScreenOptonsList
@@ -65,6 +69,7 @@ const MoreScreen = () => {
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.flatListContent}
       >
+        
         {moreScreenOptions &&
           moreScreenOptions?.map((item, index) => (
             <TouchableOpacity
@@ -106,6 +111,12 @@ const MoreScreen = () => {
                   ]}
                 />
               )}
+              {
+                item.isReedemPoints && 
+                <View style={styles.redeemPointsWrapper}>
+                  <Text style={styles.redeemPointText}>{redeemPoints}</Text>
+                </View>
+              }
             </TouchableOpacity>
           ))}
 
@@ -177,7 +188,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginHorizontal: Responsive.widthPx(6),
-    alignItems: "baseline",
+    alignItems: "center",
     paddingVertical: Responsive.heightPx(2),
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightGreyColor,
@@ -241,4 +252,18 @@ const styles = StyleSheet.create({
     fontFamily: "SemiBold",
     fontSize: Responsive.font(3.5),
   },
+
+  redeemPointsWrapper:{
+    backgroundColor:Colors.primaryButtonColor,
+    justifyContent:"center",
+    alignItems:"center",
+    borderRadius:10,
+  },
+  redeemPointText:{
+   color:Colors.whiteColor,
+   fontSize:Responsive.font(3),
+   padding:8,
+
+
+  }
 });
