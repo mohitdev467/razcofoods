@@ -59,6 +59,7 @@ const MoreScreen = () => {
     }
   };
 
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerContainer}>
@@ -164,6 +165,7 @@ const MoreScreen = () => {
 
 export default MoreScreen;
 
+const newLocal = "center";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -256,14 +258,12 @@ const styles = StyleSheet.create({
   redeemPointsWrapper:{
     backgroundColor:Colors.primaryButtonColor,
     justifyContent:"center",
-    alignItems:"center",
     borderRadius:10,
+    minWidth:Responsive.widthPx(9)
   },
   redeemPointText:{
    color:Colors.whiteColor,
    fontSize:Responsive.font(3),
-   padding:8,
-
-
+   margin:10,
   }
 });
