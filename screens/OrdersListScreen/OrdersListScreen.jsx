@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,6 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import * as FileSystem from "expo-file-system";
 import {
   responsiveFontSize as rf,
   responsiveHeight as rh,
@@ -28,7 +27,7 @@ import generateUniqueId, {
 } from "../../Utilities/CommonUtils/CommonUtils";
 import { ActivityIndicator } from "react-native-paper";
 import screenNames from "../../helpers/ScreenNames/screenNames";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { downloadInvoice } from "../../Components/DownloadInvoice/DownloadInvoice";
 import useAuthStorage from "../../helpers/Hooks/useAuthStorage";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -48,11 +47,11 @@ const OrderListScreen = () => {
 
   useEffect(() => {
     if (ordersData?.data?.length > 0) {
-      const lowercasedSearch = searchTerm.toLowerCase();
-      const filtered = ordersData.data.filter((order) => {
-        const orderIdMatch = order.orderId
+      const lowercasedSearch = searchTerm?.toLowerCase();
+      const filtered = ordersData?.data?.filter((order) => {
+        const orderIdMatch = order?.orderId
           ?.toLowerCase()
-          .includes(lowercasedSearch);
+          ?.includes(lowercasedSearch);
 
         return orderIdMatch;
       });
@@ -77,10 +76,13 @@ const OrderListScreen = () => {
   };
 
   const renderItem = ({ item }) => {
-    const { backgroundColor, textColor, icon } = getStatusStyles(item.status);
-    const productsNames = item?.products?.map(
-      (item) => item?.product?.productName
-    );
+    const { backgroundColor, textColor, icon } = getStatusStyles(item?.status);
+    const productsNames = item?.products?.length
+  ? item.products
+      .map((product) => product?.product?.productName)
+      .filter((name) => name) 
+      .join(", ") || "No products"
+  : "No products";
 
 
 
@@ -95,15 +97,15 @@ const OrderListScreen = () => {
           })
         }
       >
-        <LinearGradient
-          colors={["#ffffff", "#fafafa"]}
+        <View
           style={styles.cardGradient}
         >
           <View style={styles.cardHeader}>
             <Text style={styles.orderNumber}>{item.orderId}</Text>
             <Text style={styles.totalAmount}>
-  ${((item?.price || 0) - (item?.redeemedUSD || 0)).toFixed(2)}
-</Text>          </View>
+              {"$" + ((item?.price || 0) - (item?.redeemedUSD || 0)).toFixed(2)}
+            </Text>
+          </View>
 
           <View style={styles.detailRow}>
             <Icon name="store" size={rw(5)} color="#3b0764" />
@@ -118,7 +120,7 @@ const OrderListScreen = () => {
             <Text style={styles.label}>
               Delivery Date:{" "}
               <Text style={styles.value}>
-                {moment(item.deliveryDate).format("DD/MM/YYYY")}
+                {moment(item?.deliveryDate).format("DD/MM/YYYY")}
               </Text>
             </Text>
           </View>
@@ -127,27 +129,26 @@ const OrderListScreen = () => {
             <Icon name="access-time" size={rw(5)} color="#3b0764" />
             <Text style={styles.label}>
               Delivery Time:{" "}
-              <Text style={styles.value}>{item.deliveryTime}</Text>
+              <Text style={styles.value}>{item?.deliveryTime}</Text>
             </Text>
           </View>
           <View style={styles.detailRow}>
             <FeatherIcon name="package" size={rw(5)} color="#3b0764" />
             <Text style={styles.label}>
               Product Name:{" "}
-              <Text style={styles.value}>{productsNames?.join(", ")}</Text>
+              <Text style={styles.value}>{productsNames}</Text>
             </Text>
           </View>
           {
-
-item?.redeemedUSD &&
-          <View style={styles.detailRow}>
-            <FeatherIcon name="dollar-sign" size={rw(5)} color="#3b0764" />
-            <Text style={styles.label}>
-              Redeem Points:{" "}
-              <Text style={styles.value}>${item?.redeemedUSD?.toFixed(2)}</Text>
-            </Text>
-          </View>
-  }
+            item?.redeemedUSD &&
+            <View style={styles.detailRow}>
+              <FeatherIcon name="dollar-sign" size={rw(5)} color="#3b0764" />
+              <Text style={styles.label}>
+                Redeem Points:{" "}
+                <Text style={styles.value}>${item?.redeemedUSD?.toFixed(2)}</Text>
+              </Text>
+            </View>
+          }
 
           <View style={styles.statusContainer}>
             <View style={[styles.statusBadge, { backgroundColor }]}>
@@ -172,15 +173,13 @@ item?.redeemedUSD &&
             style={styles.downloadBtn}
             activeOpacity={0.7}
           >
-            <LinearGradient
-              colors={["#1abc9c", "#1abc9c"]}
-              style={styles.downloadGradient}
-            >
+           <View style={styles.downloadGradient}>
+
               <Icon name="download" size={rw(5)} color="#fff" />
               <Text style={styles.downloadText}>Download Invoice</Text>
-            </LinearGradient>
+           </View>
           </TouchableOpacity>
-        </LinearGradient>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -269,12 +268,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     borderRadius: 10,
-    borderWidth:1,
-    borderColor:Colors.primaryButtonColor
+    borderWidth: 1,
+    borderColor: Colors.primaryButtonColor
   },
   cardGradient: {
     padding: rw(4.5),
-    
+
   },
 
   cardHeader: {
@@ -329,6 +328,7 @@ const styles = StyleSheet.create({
     borderRadius: rw(3),
     overflow: "hidden",
     marginTop: rh(1.5),
+    backgroundColor:Colors.primaryButtonColor,
   },
   downloadGradient: {
     flexDirection: "row",

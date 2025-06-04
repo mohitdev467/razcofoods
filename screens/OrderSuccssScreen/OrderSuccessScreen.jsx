@@ -73,7 +73,7 @@ const OrderSuccessScreen = () => {
               title: "PRODUCT NAMES",
               value: (productsNames?.length
                 ? productsNames
-                : cartData?.map((item) => item.description || item?.productName)
+                : cartData?.map((item) => item?.description || item?.productName)
               )?.map((name, index) => (
                 <Text key={index} style={styles.mainHeading}>
                   • {name}
@@ -125,7 +125,7 @@ const OrderSuccessScreen = () => {
                 typeof item.value === "number" ? (
                 <Text style={styles.mainHeading}>{item.value}</Text>
               ) : (
-                item.value
+                <Text>{item.value}</Text>
               )}
             </View>
           ))}

@@ -4,7 +4,6 @@ import axiosInstance, { API_BASE_URL } from "../Api/axiosInstance";
 import { commonEntities } from "../../Utilities/CommonEntities/CommonEntities";
 
 export const UpdateUserProfile = async (id, data) => {
-  console.log("FormData sending to backend:", data);
 
   try {
     const response = await axiosInstance.put(

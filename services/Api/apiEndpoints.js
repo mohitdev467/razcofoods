@@ -33,4 +33,7 @@ export const API_ENDPOINTS = {
   resetPassword: `user/reset-password`,
   conatctUsApi: `contact-us`,
   getAllBlogs: `blog/get-all`,
+
+  // Payment
+  createPaymentIntent:"order/create-payment-intent"
 };

@@ -36,35 +36,20 @@ const ReviewOrderSection = ({
   selectedMobileNumber,
   redeemDiscount,
   userPoints,
-
+  setCouponDiscount,
+  couponDiscount,
+  handleApplyPromoCode,
+  successMessage,
+  setPromoCode,
+  promoCode,
+  loadingApplying,
 }) => {
-  const [promoCode, setPromoCode] = useState("");
   const { loginData } = useAuthStorage();
-  const [loading, setLoading] = useState(false);
   const [isOrdering, setIsOrdering] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [couponDiscount, setCouponDiscount] = useState(0);
   const naviagtion = useNavigation();
   const { clearCart } = useCart();
 
-  const handleApplyPromoCode = async () => {
-    if (!promoCode) return;
-
-    setLoading(true);
-    try {
-      const data = await getBestPromoCode(promoCode);
-      if (data.status === 200) {
-        setCouponDiscount(data?.data?.couponDiscount);
-        setSuccessMessage("Promo code applied successfully!");
-      } else {
-        errorHandler(data?.message);
-      }
-    } catch (error) {
-      console.log("Error applying promo code", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   const calculateSubtotal = () => {
     return cartData.reduce(
@@ -80,7 +65,6 @@ const ReviewOrderSection = ({
 
   const handlePlaceOrder = async () => {
     if (!selectedMobileNumber || !selectedDate || !selectedTimeSlot) {
-      console.warn("Missing required checkout details.");
       errorHandler(" Please fill all required fields.");
       return;
     }
@@ -179,7 +163,7 @@ const ReviewOrderSection = ({
           style={styles.applyButton}
           onPress={handleApplyPromoCode}
         >
-          {loading ? (
+          {loadingApplying ? (
             <ActivityIndicator size="small" color="#fff" />
           ) : (
             <Text style={styles.applyText}>Apply</Text>

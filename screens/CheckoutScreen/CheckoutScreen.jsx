@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  Alert,
 } from "react-native";
 import {
   responsiveFontSize as rf,
@@ -18,7 +19,7 @@ import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
 import PickupOptions from "../../Components/CheckoutScreenComponents/PickupOptions";
 import ContactModal from "../../Components/CheckoutScreenComponents/ContactModal";
 import { Colors } from "../../helpers/theme/colors";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { handleCreateContact } from "../../services/UserServices/UserServices";
 import useAuthStorage from "../../helpers/Hooks/useAuthStorage";
 import successHandler from "../../helpers/Notifications/SuccessHandler";
@@ -26,6 +27,14 @@ import errorHandler from "../../helpers/Notifications/ErrorHanlder";
 import useUserContact from "../../helpers/Hooks/useUserContact";
 import { SafeAreaView } from "react-native-safe-area-context";
 import useUserDetailsById from "../../helpers/Hooks/useUserDetailsById";
+import { ActivityIndicator, Button } from "react-native-paper";
+import { CardField, useConfirmPayment, initStripe } from '@stripe/stripe-react-native';
+import { handleCreatePaymentIntent } from "../../services/PaymentServices/PaymentServices";
+import { getBestPromoCode, handleCreateOrder } from "../../services/OrderServices/OrderServices";
+import screenNames from "../../helpers/ScreenNames/screenNames";
+import { useCart } from "../../helpers/Hooks/useCart";
+
+
 
 const allSteps = [
   { title: "Curbside Pickup" },
@@ -35,10 +44,24 @@ const allSteps = [
   { title: "Redeem Points" },
 ];
 
+const initializeStripe = async () => {
+  const apiUrl = process.env.EXPO_PUBLIC_STRIPE_KEY;
+  try {
+    await initStripe({
+      publishableKey: apiUrl,
+      merchantIdentifier: 'merchant.com.yourapp', 
+    });
+  } catch (error) {
+    console.error('Stripe initialization error:', error);
+  }
+};
+
 function CheckoutScreen() {
   const route = useRoute();
   const { cartData } = route.params || {};
+  const navigation = useNavigation()
   const { loginData } = useAuthStorage();
+  const { user } = useUserDetailsById(loginData?._id);
   const [activeStep, setActiveStep] = useState(0);
   const [paymentType, setPaymentType] = useState("pickup");
   const [selectedDate, setSelectedDate] = useState(null);
@@ -48,16 +71,25 @@ function CheckoutScreen() {
   const initialContact = { title: "", number: "", countryCode: "+1" };
   const [contacts, setContacts] = useState([initialContact]);
   const [showModal, setShowModal] = useState(false);
-  const { user } = useUserDetailsById(loginData?._id);
-
-
-
+  const { confirmPayment } = useConfirmPayment();
+  const [loading, setLoading] = useState(false)
+  const [cardDetails, setCardDetails] = useState({});
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [promoCode, setPromoCode] = useState("");
+  const [loadingApplying, setLoadingApplying] = useState(false)
+  const [isCardPaymentProcessing, setIsCardPaymentProcessing] = useState(false);
   const userPoints = user?.data?.points?.available || 0;
   const [redeemDiscount, setRedeemDiscount] = useState(0);
   const [redeemed, setRedeemed] = useState(false);
-
+  const { clearCart } = useCart();
 
   const { contact: contactsData, fetchContact } = useUserContact(loginData?._id);
+
+
+  useEffect(() => {
+    initializeStripe();
+  }, []);
 
 
   const toggleStep = (index) => {
@@ -75,6 +107,24 @@ function CheckoutScreen() {
   const handleTimeChange = (time) => setSelectedTimeSlot(time);
   const handleSelectContact = (item) => setSelectedMobileNumber(item);
   const resetContacts = () => setContacts([initialContact]);
+
+  const handleApplyPromoCode = async () => {
+    if (!promoCode) return;
+    setLoadingApplying(true);
+    try {
+      const data = await getBestPromoCode(promoCode);
+      if (data.status === 200) {
+        setCouponDiscount(data?.data?.couponDiscount);
+        setSuccessMessage("Promo code applied successfully!");
+      } else {
+        errorHandler(data?.message);
+      }
+    } catch (error) {
+      console.log("Error applying promo code", error);
+    } finally {
+      setLoadingApplying(false);
+    }
+  };
 
   const handleSave = async () => {
     for (const contact of contacts) {
@@ -104,13 +154,127 @@ function CheckoutScreen() {
 
   useEffect(() => {
     if (contactsData?.data?.phone?.length > 0) {
-      setSelectedMobileNumber(contactsData.data.phone[0]);
+      setSelectedMobileNumber(contactsData?.data?.phone[0]);
     }
   }, [contactsData]);
 
-  const steps = allSteps.filter(
-    (step) => !(step.title === "Redeem Points" && userPoints <= 0)
+ 
+
+  // Calculation section
+  const calculateSubtotal = () => {
+    return cartData?.reduce(
+      (total, item) => total + item?.price * item?.quantity,
+      0
+    );
+  };
+
+  const subtotal = calculateSubtotal();
+
+  const discountAmount = (subtotal * couponDiscount) / 100;
+  const total = subtotal - discountAmount - (redeemDiscount || 0);
+
+
+  const steps = allSteps?.filter(
+    (step) =>
+      !(
+        step.title === "Redeem Points" &&
+        (userPoints <= 0 || user?.data?.redeemableUSD >= total)
+      )
   );
+
+  const handleCardPayment = async () => {
+    if (!selectedMobileNumber || !selectedDate || !selectedTimeSlot) {
+      errorHandler(" Please fill all required fields.");
+      return;
+    }
+
+    try {
+      setIsCardPaymentProcessing(true);
+      const payload = {
+        couponId: null,
+        discount: discountAmount,
+        id: loginData?._id,
+        items:
+          cartData?.map((item) => ({
+            _id: item.id,
+            productName: item.description,
+            productImage: item.productImage,
+            quantity: item.quantity,
+            price: item.price,
+          })) || [],
+        selectedOrderDetails: {
+          contact: selectedMobileNumber?.number || "",
+          deliveryAddress: "default",
+          instructions: "",
+          payment: "card",
+          schedule: {
+            deliveryDate: selectedDate,
+            deliveryTime: selectedTimeSlot,
+            shopLocation: selectedLocation,
+          },
+        },
+        subTotal: subtotal,
+        total: total,
+        redeemDiscount: redeemDiscount,
+        userPoints: userPoints,
+      };
+      const result = await handleCreateOrder(payload);
+      if (result?.status === 200) {
+        successHandler(result?.message || "Order placed successfully");
+        clearCart();
+        navigation.navigate(screenNames.OrderSuccessScreen, {
+          orderedData: result?.data,
+          cartData: cartData,
+          redeemDiscount: redeemDiscount,
+          userPoints: userPoints,
+        });
+      } else {
+        errorHandler(result?.message || "Something went wrong");
+      }
+    } catch (error) {
+      errorHandler("Something went wrong. Please try again later.");
+    } finally {
+      setIsCardPaymentProcessing(false);
+    }
+
+  }
+
+  const handlePayPress = async () => {
+    if (paymentType === 'pickup') {
+      Alert.alert('Success', 'Payment on pickup selected. Proceed with order.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+
+      const payload = {
+        price: total,
+      };
+      const response = await handleCreatePaymentIntent(payload);
+      const clientSecret = response?.data?.client_secret;
+      const { paymentIntent, error } = await confirmPayment(clientSecret, {
+        paymentMethodType: 'Card',
+        paymentMethodData: {
+          billingDetails: {
+            email: 'customer@example.com',
+          },
+        },
+      });
+
+      console.log("errorrrrr", error)
+      if (error) {
+        errorHandler(error.message);
+      } else if (paymentIntent.status === "Succeeded") {
+        handleCardPayment()
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <SafeAreaView
@@ -208,8 +372,58 @@ function CheckoutScreen() {
                             : "⦿ Payment On Pickup"}
                         </Text>
                       </TouchableOpacity>
+
+                      <TouchableOpacity
+                        onPress={() => setPaymentType('card')}
+                        style={{ marginBottom: rh(2) }}
+                      >
+                        <Text
+                          style={{
+                            fontWeight: 'bold',
+                            color: paymentType === 'card' ? '#00b894' : '#333',
+                          }}
+                        >
+                          {paymentType !== 'card' ? '⭘ Card Payment' : '⦿ Card Payment'}
+                        </Text>
+                      </TouchableOpacity>
+
+
+                      {paymentType === 'card' && (
+                        <CardField
+                          postalCodeEnabled={false}
+                          placeholders={{ number: '4242 4242 4242 4242' }}
+                          cardStyle={{
+                            backgroundColor: '#FFFFFF',
+                            textColor: '#000000',
+                            borderWidth: 1,
+                            borderColor: Colors.primaryButtonColor,
+                            borderRadius: 10,
+                          }}
+                          style={{
+                            width: '100%',
+                            height: 50,
+                            marginVertical: 30,
+                          }}
+                          onCardChange={(details) => setCardDetails(details)}
+
+                        />
+                      )}
+
+
+                      <TouchableOpacity onPress={handlePayPress} style={styles.payCardButton}>
+                        {
+                          isCardPaymentProcessing ?
+                            <ActivityIndicator size="small" color="#fff" />
+
+                            :
+                            <Text style={styles.payWithCardText}>{paymentType === 'pickup' ? 'Confirm Pickup' : 'Pay Now'}</Text>
+                        }
+                      </TouchableOpacity>
                     </View>
+
                   )}
+
+
                   {actualIndex === 3 && (
                     <View>
                       <Text style={styles.noteLabel}>
@@ -241,7 +455,7 @@ function CheckoutScreen() {
                           onPress={() => {
                             const redeemableUSD = user?.data?.redeemableUSD;
                             setRedeemDiscount(redeemableUSD);
-                            setRedeemed(true); 
+                            setRedeemed(true);
                             successHandler(`${redeemableUSD} USD redeemed successfully`);
                           }}
                           style={{
@@ -320,6 +534,13 @@ function CheckoutScreen() {
           selectedLocation={selectedLocation}
           redeemDiscount={redeemDiscount}
           userPoints={userPoints}
+          setCouponDiscount={setCouponDiscount}
+          couponDiscount={couponDiscount}
+          handleApplyPromoCode={handleApplyPromoCode}
+          successMessage={successMessage}
+          setPromoCode={setPromoCode}
+          promoCode={promoCode}
+          loadingApplying={loadingApplying}
         />
       </ScrollView>
 
@@ -399,6 +620,20 @@ const styles = StyleSheet.create({
     fontSize: Responsive.font(4),
     fontFamily: "SemiBold",
   },
+
+  payCardButton: {
+    backgroundColor: Colors.primaryButtonColor,
+    paddingVertical: Responsive.heightPx(1.5),
+    width: Responsive.widthPx(40),
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "flex-end",
+    borderRadius: 10,
+  },
+  payWithCardText: {
+    color: Colors.whiteColor,
+    fontFamily: "Bold"
+  }
 });
 
 export default CheckoutScreen;

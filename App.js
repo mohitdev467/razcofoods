@@ -11,7 +11,7 @@ import { CartProvider } from "./helpers/Hooks/useCart.jsx";
 import { WishlistProvider } from "./helpers/Hooks/useWishlist.jsx";
 import { LogBox } from "react-native";
 
-LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+LogBox.ignoreAllLogs();
 
 const customTheme = {
   ...DefaultTheme,

@@ -15,6 +15,7 @@
     "@react-navigation/drawer": "^7.3.12",
     "@react-navigation/native": "^7.1.9",
     "@react-navigation/stack": "^7.3.2",
+    "@stripe/stripe-react-native": "^0.47.1",
     "axios": "^1.9.0",
     "eas-cli": "^16.4.1",
     "expo": "~53.0.9",
@@ -50,10 +51,12 @@
     "react-native-webview": "^13.13.5",
     "scheduler": "^0.26.0",
     "uuid": "^11.1.0",
-    "yup": "^1.6.1"
+    "yup": "^1.6.1",
+    "expo-constants": "~17.1.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "react-native-dotenv": "^3.4.11"
   },
   "private": true
 }

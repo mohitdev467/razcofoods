@@ -165,7 +165,6 @@ const MoreScreen = () => {
 
 export default MoreScreen;
 
-const newLocal = "center";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -177,7 +176,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop:Platform.OS ==="ios" && Responsive.heightPx(-5),
-  
     paddingVertical: Responsive.heightPx(2),
   },
 
@@ -191,7 +189,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginHorizontal: Responsive.widthPx(6),
     alignItems: "center",
-    paddingVertical: Responsive.heightPx(2),
+    paddingVertical:Platform.OS === "ios" ? Responsive.heightPx(1.9) : Responsive.heightPx(2),
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightGreyColor,
   },
