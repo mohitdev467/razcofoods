@@ -25,6 +25,8 @@ const CommonHeader = () => {
       }
     }, [loginData?._id, refetch])
   ); 
+
+
   return (
     <>
       <View style={styles.container}>
@@ -41,11 +43,13 @@ const CommonHeader = () => {
             onPress={() => setIsLoginSignupModal(true)}
           >
             <Image
-              source={
-                typeof user?.data?.profileImage === "string"
-                  ? { uri:`${IMAGE_BASE_URL}${user?.data?.profileImage}`}
-                  : ImagePicker.PlaceholderImage
-              }
+             source={
+              user?.data?.profileImage && user?.data?.profileImage !== "null" && user?.data?.profileImage !== ""
+                ? user?.data?.profileImage.startsWith("http")
+                  ? { uri: user?.data?.profileImage }
+                  : { uri: `${IMAGE_BASE_URL}${user?.data?.profileImage}` }
+                : ImagePicker.dummyUserImage
+            }
               style={styles.logoutIcon}
             />
           </TouchableOpacity>

@@ -2,5 +2,6 @@ export const helpSupportContent = {
   heading: "Help & Support",
   text1: "Support is our main priority",
   text2:
-    "We created reusable react components, and modern mono repo architecture, so you can build multiple apps with common components. You can use these landing for your react app. It’s super easy to deploy, we have provided complete firebase integration it.",
-};
+    "Providing excellent support is our top priority. Whether you have questions, face issues, or need guidance, our team is here to help you every step of the way. Your experience is important to us, and we're committed to making it as smooth and stress-free as possible.",
+   text3:"Thank you for your confirmation to delete your account support team will coordinate with your in 24 hrs."
+  };

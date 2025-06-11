@@ -29,6 +29,7 @@ const CustomInputField = ({
   mainContainerStyle,
   secureTextEntry,
   onRightIconPress,
+  isRequired=false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -45,7 +46,7 @@ const CustomInputField = ({
       behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={[styles.container, containerStyle]}
     >
-      {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
+      {label && <Text style={[styles.label, labelStyle]}>{isRequired && <Text style={styles.asterisk}>* </Text>}{label}</Text>}
       <View
         style={[
           styles.inputWrapper,
@@ -120,7 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: Responsive.font(4),
     color: Colors.blackColor,
-    fontFamily: "Regular",
+    fontFamily: "SemiBold",
   },
   iconContainer: {
     marginHorizontal: Responsive.widthPx(1.5),
@@ -135,6 +136,10 @@ const styles = StyleSheet.create({
   },
   helperTextError: {
     color: Colors.errorColor,
+  },
+  asterisk: {
+    color: Colors.errorColor,
+    fontFamily: "SemiBold",
   },
 });
 

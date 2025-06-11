@@ -12,7 +12,6 @@ import {
   ScrollView,
   RefreshControl,
   KeyboardAvoidingView,
-  SafeAreaView,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -21,7 +20,6 @@ import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
 import useGoBack from "../../helpers/Hooks/useGoBack";
 import { commonContent } from "../../constants/CommonContent/CommonContent";
 import { ImagePicker } from "../../helpers/ImageHelper/ImagePicker";
-import { StatusBar } from "expo-status-bar";
 import useAuthStorage from "../../helpers/Hooks/useAuthStorage";
 import useUserDetailsById from "../../helpers/Hooks/useUserDetailsById";
 import { UpdateUserProfile } from "../../services/UserServices/UserServices";
@@ -34,14 +32,12 @@ import Loader from "../../Components/CommonComponents/Loader";
 import { profileValidationsSchema } from "../../helpers/Validations/ValidationSchema";
 import successHandler from "../../helpers/Notifications/SuccessHandler";
 import { IMAGE_BASE_URL } from "../../services/Api/axiosInstance";
+import { SafeAreaView } from "react-native-safe-area-context";
+import HeaderWithBack from "../../Components/CommonComponents/HeaderWithBack";
 
 const PersonalInfoScreen = () => {
-  const goBack = useGoBack();
   const { loginData } = useAuthStorage();
   const { user, loading } = useUserDetailsById(loginData?._id);
-
-
-
 
   const [formState, setFormState] = useState({
     name: "",
@@ -51,6 +47,7 @@ const PersonalInfoScreen = () => {
     countryCode: "US",
     visible: false,
     profileImage: null,
+    isFormSubmitting: false,
   });
   const [formErrors, setFormErrors] = useState({});
   const [refreshing, setRefreshing] = useState(false);
@@ -92,6 +89,8 @@ const PersonalInfoScreen = () => {
 
   const handleSubmit = async () => {
     try {
+      updateFormState("isFormSubmitting", true);
+
       await profileValidationsSchema.validate(formState, { abortEarly: false });
 
       const formData = new FormData();
@@ -100,6 +99,10 @@ const PersonalInfoScreen = () => {
       formData.append("email", formState.email);
       formData.append("phone", formState.phone);
       formData.append("gender", formState.gender);
+      const countryCode = formState.countryCode === "US" ? "+1" :
+        `+${formState.countryCode}`
+        ;
+      formData.append("countryCode", countryCode);
 
       if (formState.profileImage?.uri || typeof formState.profileImage === 'string') {
         const imageUri = formState.profileImage?.uri || formState.profileImage;
@@ -124,6 +127,9 @@ const PersonalInfoScreen = () => {
         });
       }
       setFormErrors(errors);
+    } finally {
+      updateFormState("isFormSubmitting", false);
+
     }
   };
 
@@ -177,9 +183,12 @@ const PersonalInfoScreen = () => {
     </View>
   );
 
+
   return (
     <>
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
+        <HeaderWithBack title={"Update Profile"} />
+
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -200,10 +209,7 @@ const PersonalInfoScreen = () => {
                 tintColor={Colors.primaryButtonColor}
               >
                 <View style={styles.headerContainerForBack}>
-                  <TouchableOpacity onPress={goBack}>
-                    <Icon name="arrow-left" style={styles.icon} />
-                  </TouchableOpacity>
-                  <Text style={styles.title}>{commonContent.updateProfileHeading}</Text>
+
                 </View>
 
                 <View style={styles.imageWrapper}>
@@ -212,8 +218,10 @@ const PersonalInfoScreen = () => {
                       formState?.profileImage?.uri
                         ? { uri: formState.profileImage.uri }
                         : user?.data?.profileImage
-                          ? { uri: `${IMAGE_BASE_URL}${user.data.profileImage}` }
-                          : ImagePicker.PlaceholderImage
+                          ? user.data.profileImage.startsWith("http")
+                            ? { uri: user.data.profileImage }
+                            : { uri: `${IMAGE_BASE_URL}${user.data.profileImage}` }
+                          : ImagePicker.dummyUserImage
                     }
                     style={styles.profileImage}
                   />
@@ -226,7 +234,7 @@ const PersonalInfoScreen = () => {
                   <Text style={styles.userNameStyle}>{`Name: ${user?.data?.name || "Not available"}`}</Text>
                   <Text style={styles.emailUserText}>{`Gender: ${user?.data?.gender || "Not available"}`}</Text>
                   <Text style={styles.emailUserText}>{`Email: ${user?.data?.email || "Not available"}`}</Text>
-                 
+
 
                 </View>
               </ImageBackground>
@@ -269,6 +277,7 @@ const PersonalInfoScreen = () => {
                 defaultValue={user?.data?.loginPhone || formState.phone}
                 defaultCode={formState.countryCode}
                 onChangePhone={handlePhoneChange}
+                onChangeCountryCode={(code) => updateFormState("countryCode", code)}
                 error={!!formErrors.phone}
                 errorMessage={formErrors.phone}
               />
@@ -288,16 +297,19 @@ const PersonalInfoScreen = () => {
                 <Text style={styles.errorText}>{formErrors.gender}</Text>
               )}
 
-              <ButtonComponent
-                title={commonContent.updateProfileHeading}
-                onPress={handleSubmit}
-                style={styles.buttonStyle}
+              {
+                formState.isFormSubmitting ? <Loader visible={formState.isFormSubmitting} /> :
+                  <ButtonComponent
+                    title={commonContent.updateProfileHeading}
+                    onPress={handleSubmit}
+                    style={styles.buttonStyle}
 
-              />
+                  />
+              }
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
-      </View>
+      </SafeAreaView>
     </>
   );
 };
@@ -311,7 +323,7 @@ const styles = StyleSheet.create({
   },
   bgBackBanner: {
     height: Responsive.heightPx(45),
-    marginTop: Platform.OS === "ios" ? Responsive.heightPx(0) : Responsive.heightPx(7),
+    marginTop: Platform.OS === "ios" ? Responsive.heightPx(0) : Responsive.heightPx(0),
   },
   frontBanner: {
     height: Responsive.heightPx(40),
@@ -371,7 +383,7 @@ const styles = StyleSheet.create({
   },
   loginInputWrapper: {
     paddingHorizontal: Responsive.widthPx(5),
-    marginTop: Responsive.heightPx(0),
+    marginTop: Responsive.heightPx(-6),
     marginBottom: Responsive.heightPx(5)
   },
   dropdownStyle: {

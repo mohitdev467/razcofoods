@@ -6,12 +6,14 @@ import { Colors } from "../../helpers/theme/colors";
 
 const PhoneNumberInput = ({
   onChangePhone,
+  onChangeCountryCode,
   label,
   labelStyle,
   error,
   errorMessage,
   defaultValue = "",
-  defaultCode = "IN",
+  defaultCode = "US",
+  isRequired=false
 }) => {
   const phoneInputRef = useRef(null);
   const [phoneNumber, setPhoneNumber] = useState(defaultValue);
@@ -19,7 +21,7 @@ const PhoneNumberInput = ({
 
   return (
     <View style={styles.container}>
-      {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
+      {label && <Text style={[styles.label, labelStyle]}>{isRequired && <Text style={styles.asterisk}>* </Text>}{label}</Text>}
 
       <PhoneInput
         ref={phoneInputRef}
@@ -33,6 +35,11 @@ const PhoneNumberInput = ({
         }}
         onChangeFormattedText={(text) => {
           setFormattedValue(text);
+        }}
+        onChangeCountry={(country) => {
+          if (onChangeCountryCode) {
+            onChangeCountryCode(country.callingCode[0]); 
+          }
         }}
         containerStyle={styles.phoneContainer}
         textContainerStyle={styles.textContainer}
@@ -84,6 +91,10 @@ const styles = StyleSheet.create({
     color: "red",
     marginTop: Responsive.heightPx(1),
     fontSize: Responsive.font(3),
+  },
+  asterisk: {
+    color: Colors.errorColor,
+    fontFamily: "SemiBold",
   },
 });
 

@@ -89,3 +89,14 @@ export const handleUpdateSend = async (data) => {
     throw error;
   }
 };
+
+
+export const handleDeleteAccountRequest = async (data) => {
+  try {
+    const response = await axiosInstance.post(API_ENDPOINTS.deleteRequest, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};

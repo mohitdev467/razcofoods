@@ -1,6 +1,6 @@
 export const ImagePicker = {
   splashScreenImage: require("../../assets/splashScreen.png"),
-  logoImage: require("../../assets/Images/logo.png"),
+  logoImage: require("../../assets/Images/razco-logo.png"),
   loginScreenImage: require("../../assets/Images/Discount-Bannar.png"),
   banner1: require("../../assets/Images/Corousel-banners/1.png"),
   banner2: require("../../assets/Images/Corousel-banners/2.png"),
@@ -19,6 +19,7 @@ export const ImagePicker = {
   curatedCollection1: require("../../assets/Images/login.png"),
   curatedCollection2: require("../../assets/Images/registration.png"),
   PlaceholderImage: require("../../assets/Images/image-placeholder.png"),
+  dummyUserImage: require("../../assets/Images/dummy-user.png"),
   emptyCartImage: require("../../assets/Images/empty-cart.png"),
   updateProfileBgBackImage: require("../../assets/Images/update-profile-banner-back.png"),
   updateProfileBgFrontImage: require("../../assets/Images/update-profile-banner-front.png"),

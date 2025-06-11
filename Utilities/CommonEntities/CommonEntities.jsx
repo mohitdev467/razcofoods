@@ -57,4 +57,5 @@ export const commonEntities = {
   welcomeRazcoFood: "WELCOME TO RAZCOFOOD SUPER MARKET",
   weeklyDeal: "Weekly Deal",
   thankYouOrderEntitit: "Thank you. Your Order has been received.",
+  copyRightDescription:"© Copyright 2025 Razco Fresh. All rights reserved."
 };

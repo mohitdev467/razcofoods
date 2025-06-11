@@ -17,6 +17,7 @@ import {
 } from "../../services/UserServices/UserServices";
 import successHandler from "../../helpers/Notifications/SuccessHandler";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Loader from "../../Components/CommonComponents/Loader";
 
 const ContactusScreen = () => {
   const [formState, setFormState] = useState({
@@ -24,7 +25,9 @@ const ContactusScreen = () => {
     email: "",
     message: "",
     mobile: "",
+    countryCode: "US",
     visible: false,
+    loading: false,
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -53,21 +56,21 @@ const ContactusScreen = () => {
 
   const handleSubmit = async () => {
     try {
+      updateFormState("loading", true);
+
       await contactUsFormValidationSchema.validate(formState, {
         abortEarly: false,
       });
 
-      console.log("countryccccc", formState.mobile);
       const payload = {
         name: formState?.name,
         email: formState?.email,
         message: formState?.message,
-        countryCode: "+91",
+        countryCode: formState.countryCode === "US" ? "+1" : `+${formState.countryCode}`,
         phone: formState?.mobile,
       };
 
       const data = await handleUpdateSend(payload);
-      console.log("dataaaaaaa", data);
       if (data?.status === 201) {
         successHandler(data?.message);
       }
@@ -79,6 +82,9 @@ const ContactusScreen = () => {
         });
         setFormErrors(errors);
       }
+    } finally {
+      updateFormState("loading", false);
+
     }
   };
 
@@ -122,6 +128,8 @@ const ContactusScreen = () => {
             mainContainerStyle={styles.mainContainer}
             labelStyle={styles.labelStyle}
             inputStyle={styles.inputStyle}
+            isRequired={true}
+
           />
 
           <CustomInputField
@@ -136,6 +144,8 @@ const ContactusScreen = () => {
             mainContainerStyle={styles.mainContainer}
             labelStyle={styles.labelStyle}
             inputStyle={styles.inputStyle}
+            isRequired={true}
+
           />
 
           <PhoneNumberInput
@@ -143,8 +153,11 @@ const ContactusScreen = () => {
             defaultValue={formState.mobile}
             defaultCode={formState.countryCode}
             onChangePhone={handlePhoneChange}
+            onChangeCountryCode={(code) => updateFormState("countryCode", code)}
             error={!!formErrors.mobile}
             errorMessage={formErrors.mobile}
+            isRequired={true}
+
           />
 
           <CustomInputField
@@ -159,13 +172,18 @@ const ContactusScreen = () => {
             mainContainerStyle={styles.mainContainer}
             labelStyle={[styles.labelStyle, { alignSelf: "flex-start" }]}
             inputStyle={styles.inputStyle}
+            isRequired={true}
+
           />
 
-          <ButtonComponent
-            title={"Send Message"}
-            onPress={handleSubmit}
-            style={styles.buttonStyle}
-          />
+          {
+            formState.loading ? <Loader visible={formState.loading} /> :
+              <ButtonComponent
+                title={"Send Message"}
+                onPress={handleSubmit}
+                style={styles.buttonStyle}
+              />
+          }
         </View>
 
         <EarnPointsCard />

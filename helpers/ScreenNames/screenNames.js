@@ -24,6 +24,8 @@ const screenNames = {
   HelpSupportScreen: "HelpSupportScreen",
   ContactusScreen: "ContactusScreen",
   BlogsScreen: "BlogsScreen",
+  DeleteAccountScreen: "DeleteAccountScreen",
+
 };
 
 export default screenNames;

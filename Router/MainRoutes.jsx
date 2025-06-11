@@ -33,6 +33,7 @@ import ReturnPolicyScreen from "../screens/ReturnPolicyScreen/ReturnPolicyScreen
 import HelpSupportScreen from "../screens/HelpSupportScreen/HelpSupportScreen.jsx";
 import ContactusScreen from "../screens/ContactusScreen/ContactusScreen.jsx";
 import BlogsScreen from "../screens/BlogsScreen/BlogsScreen.jsx";
+import DeleteAccountScreen from "../screens/DeleteAccountScreen/DeleteAccountScreen.jsx";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -175,6 +176,10 @@ export default function MainRoutes() {
         <Stack.Screen
           name={screenNames.ContactusScreen}
           component={ContactusScreen}
+        />
+        <Stack.Screen
+          name={screenNames.DeleteAccountScreen}
+          component={DeleteAccountScreen}
         />
         <Stack.Screen
           name={screenNames.ProductsDetailsScreen}

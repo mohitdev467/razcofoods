@@ -16,6 +16,8 @@ const RazcoFoodDescription = () => {
           {commonEntities.razcoAboutDescription}
         </Text>
       </View>
+
+      <Text style={styles.textStyle2}>{commonEntities.copyRightDescription}</Text>
     </View>
   );
 };
@@ -49,4 +51,9 @@ const styles = StyleSheet.create({
     paddingVertical: Responsive.heightPx(1),
     color: Colors.greyColor,
   },
+  textStyle2:{
+    textAlign: "center",
+    paddingVertical: Responsive.heightPx(1),
+    color: Colors.greyColor,
+  }
 });

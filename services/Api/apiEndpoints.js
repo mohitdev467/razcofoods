@@ -32,6 +32,8 @@ export const API_ENDPOINTS = {
   forgetPassword: `user/forget-password`,
   resetPassword: `user/reset-password`,
   conatctUsApi: `contact-us`,
+  deleteRequest: `delete-request/`,
+
   getAllBlogs: `blog/get-all`,
 
   // Payment

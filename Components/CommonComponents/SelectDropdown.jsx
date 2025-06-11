@@ -23,12 +23,14 @@ const SelectDropdown = ({
   dropdownContainerStyle,
   error,
   errorMessage,
+  isRequired =false
+
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={styles.container}>
-      {label && <Text style={[styles.label, labelStyle]}>{label}</Text>}
+      {label && <Text style={[styles.label, labelStyle]}>{isRequired && <Text style={styles.asterisk}>* </Text>}{label}</Text>}
 
       <TouchableOpacity
         style={[styles.dropdown, dropdownStyle, error && styles.errorBorder]}
@@ -135,6 +137,10 @@ const styles = StyleSheet.create({
   iconStyle: {
     fontSize: Responsive.font(3.5),
     color: "grey",
+  },
+  asterisk: {
+    color: Colors.errorColor,
+    fontFamily: "SemiBold",
   },
 });
 

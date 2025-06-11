@@ -55,6 +55,8 @@ const UpdateProfileFormComponent = ({ formState,
           mainContainerStyle={styles.mainContainer}
           labelStyle={styles.labelStyle}
           inputStyle={styles.inputStyle}
+          isRequired={true}
+
         />
 
         <CustomInputField
@@ -69,6 +71,8 @@ const UpdateProfileFormComponent = ({ formState,
           mainContainerStyle={styles.mainContainer}
           labelStyle={styles.labelStyle}
           inputStyle={styles.inputStyle}
+          isRequired={true}
+
         />
 
         <PhoneNumberInput
@@ -76,8 +80,11 @@ const UpdateProfileFormComponent = ({ formState,
           defaultValue={userData?.loginPhone || formState?.phone}
           defaultCode={formState.countryCode}
           onChangePhone={handlePhoneChange}
+          onChangeCountryCode={(code) => updateFormState("countryCode", code)}
           error={!!formErrors.phone}
           errorMessage={formErrors.phone}
+          isRequired={true}
+
         />
         <SelectDropdown
           options={items}
@@ -89,6 +96,8 @@ const UpdateProfileFormComponent = ({ formState,
           dropdownStyle={styles.dropdownStyle}
           dropdownContainerStyle={styles.dropdownStyleContainer}
           selectContainerStyle={styles.selectContainerStyle}
+          isRequired={true}
+
         />
         {formErrors.gender && (
           <Text style={styles.errorText}>{formErrors.gender}</Text>

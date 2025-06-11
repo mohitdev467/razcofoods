@@ -12,7 +12,6 @@ import Icon from "react-native-vector-icons/Feather";
 import { commonEntities } from "../../Utilities/CommonEntities/CommonEntities";
 import { Colors } from "../../helpers/theme/colors";
 import Responsive from "../../helpers/ResponsiveDimensions/Responsive";
-import { wrap } from "lodash";
 import moment from "moment";
 import ButtonComponent from "../../Components/CommonComponents/ButtonComponent";
 import screenNames from "../../helpers/ScreenNames/screenNames";
