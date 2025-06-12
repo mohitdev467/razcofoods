@@ -75,7 +75,7 @@ const ChangePasswordScreen = () => {
   };
 
   return (
-        <SafeAreaView>
+        <SafeAreaView style={{flex:1}}>
     
     <ScrollView contentContainerStyle={styles.container}>
       <HeaderWithBack title={"Change Password"} />

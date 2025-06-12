@@ -78,15 +78,7 @@ const DeleteAccountScreen = () => {
             const data = await handleDeleteAccountRequest(payload);
             if (data?.status === 201) {
                 successHandler(data?.message);
-                updateFormState("showThankYouMessage", true);
-                await clearLoginData();
-                navigation.dispatch(
-                    CommonActions.reset({
-                        index: 0,
-                        routes: [{ name: screenNames.LoginScreen }],
-                    })
-                );
-
+                updateFormState("showThankYouMessage", true);                
             }
         } catch (validationErrors) {
             if (validationErrors.inner) {

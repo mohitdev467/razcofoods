@@ -73,7 +73,7 @@ const LoginScreen = () => {
         successHandler(result?.data?.message);
         navigation.navigate(screenNames.HomeScreen);
       } else {
-        errorHandler(result?.message || "Login failed");
+        errorHandler(result?.data?.message || "Login failed");
       }
     } catch (err) {
       if (err.name === "ValidationError") {
