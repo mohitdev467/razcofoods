@@ -43,7 +43,11 @@ const ProductScreen = () => {
   const [selected, setSelected] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [search, setSearch] = useState("");
-  const selectedCategory = userCategory
+  const [ignoreUserCategory, setIgnoreUserCategory] = useState(false);
+
+
+  const selectedCategory =
+  !ignoreUserCategory && userCategory
     ? userCategory
     : selected?.length > 0
     ? selected.join(",")
@@ -72,7 +76,6 @@ const ProductScreen = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    setSelected([]);
 
     setTimeout(() => setRefreshing(false), 2000);
   }, [refreshing]);
@@ -84,6 +87,12 @@ const ProductScreen = () => {
     }, [])
   );
 
+  const handleClear = () => {
+    setIgnoreUserCategory(true);
+    setSelected([]);
+    setPage(1);  
+    onRefresh(); 
+  };
   if (loading && page === 1) {
     return (
       <View style={styles.loaderContainer}>
@@ -131,31 +140,45 @@ const ProductScreen = () => {
                   <Ionicons name="filter" size={rh(2)} color="black" />
                   <Text style={styles.buttonText}>Filter</Text>
                 </TouchableOpacity>
+                {
 
-                <View style={styles.selectedContainer}>
-                  {selected?.map((item) => (
-                    <View key={item} style={styles.tag}>
-                      <Text
-                        style={{
-                          color: Colors.whiteColor,
-                          width: Responsive.widthPx(13),
-                          textTransform:"capitalize"
-                        }}
-                      >
-                        {item}
-                      </Text>
-                      <TouchableOpacity onPress={() => toggleSub(item)}>
-                        <Text
-                          style={{ marginLeft: 10, color: Colors.whiteColor }}
-                        >
-                          ×
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </View>
+                  selected?.length > 0 &&
+                  <TouchableOpacity
+                    onPress={handleClear}
+                    style={[
+                      styles.actionButtons,
+                      { backgroundColor: Colors.errorColor },
+                    ]}
+                  >
+                    <Text style={styles.clearAll}>Clear All</Text>
+                  </TouchableOpacity>
+                }
               </View>
             )}
+            <View style={styles.selectedContainer}>
+              {selected?.map((item) => (
+                <View key={item} style={styles.tag}>
+                  <Text
+                    style={{
+                      color: Colors.whiteColor,
+                      width: 'auto',
+                      textTransform: "capitalize",
+                      paddingHorizontal: Responsive.widthPx(2),
+                      marginRight: Responsive.widthPx(2),
+                    }}
+                  >
+                    {item}
+                  </Text>
+                  <TouchableOpacity onPress={() => toggleSub(item)} style={{ marginRight: Responsive.widthPx(2) }}>
+                    <Text
+                      style={{ marginLeft: 5, color: Colors.whiteColor }}
+                    >
+                      ×
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
             <View
               style={{
                 backgroundColor: "#fff",
@@ -246,7 +269,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: rh(1),
     paddingHorizontal: rw(3.5),
-    borderWidth:Platform.OS ==="ios" ? 0.3 : 0.1,
+    borderWidth: Platform.OS === "ios" ? 0.3 : 0.1,
     borderRadius: rw(3),
     alignItems: "center",
     justifyContent: "center",
@@ -266,8 +289,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignItems: "center",
     marginVertical: Responsive.heightPx(2),
-    marginRight: Responsive.widthPx(3),
-    width: Responsive.widthPx(75),
+    marginHorizontal: Responsive.widthPx(3),
+    width: Responsive.widthPx(90),
   },
   tag: {
     flexDirection: "row",
@@ -278,5 +301,22 @@ const styles = StyleSheet.create({
     margin: rw(1),
     borderRadius: 20,
     backgroundColor: Colors.primaryButtonColor,
+  },
+  actionButtons: {
+    backgroundColor: Colors.primaryButtonColor,
+    borderRadius: 50,
+    margin: Responsive.widthPx(3),
+    marginTop: Responsive.heightPx(3),
+    paddingHorizontal: Responsive.widthPx(2),
+    paddingVertical: Responsive.heightPx(1),
+    justifyContent: "center",
+    alignItems: "center"
+
+  },
+  clearAll: {
+    color: Colors.whiteColor,
+    fontSize: Responsive.font(3.5),
+    alignSelf: "center",
+    marginHorizontal: Responsive.widthPx(3)
   },
 });

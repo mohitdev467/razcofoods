@@ -55,7 +55,8 @@ const FootLoveToEat = () => {
             style={styles.imageWrapper}
             onPress={() =>
               navigation.navigate(screenNames.ProductsScreen, {
-                userCategory: item.name,
+                userCategory: item.slug,
+                userCategoryName:item.name,
               })
             }
           >
