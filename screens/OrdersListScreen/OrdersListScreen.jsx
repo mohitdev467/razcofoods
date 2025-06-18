@@ -193,7 +193,7 @@ const OrderListScreen = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
       <HeaderWithBack title="My Orders" />
 
       {/* Search Bar */}
@@ -207,7 +207,7 @@ const OrderListScreen = () => {
         />
       </View>
 
-      {filteredOrders?.length > 0 ? (
+      {filteredOrders?.length > 0  ? (
         <FlatList
           data={filteredOrders}
           keyExtractor={(item, index) => generateUniqueId()}
@@ -257,23 +257,25 @@ const styles = StyleSheet.create({
   listContent: {
     padding: rw(5),
     paddingBottom: rh(10),
+    backgroundColor:Colors.whiteColor
   },
   card: {
     marginBottom: rh(2.5),
     borderRadius: rw(4),
     overflow: "hidden",
     elevation: 5,
-    shadowColor: Colors.blackColor,
+    shadowColor: Colors.whiteColor,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: Colors.primaryButtonColor
+    borderColor: Colors.primaryButtonColor,
+    backgroundColor:Colors.whiteColor
   },
   cardGradient: {
     padding: rw(4.5),
-
+    backgroundColor:Colors.whiteColor
   },
 
   cardHeader: {

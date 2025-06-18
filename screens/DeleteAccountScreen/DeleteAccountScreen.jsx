@@ -18,13 +18,8 @@ import {
 import successHandler from "../../helpers/Notifications/SuccessHandler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Loader from "../../Components/CommonComponents/Loader";
-import useAuthStorage from "../../helpers/Hooks/useAuthStorage";
-import { CommonActions, useNavigation } from "@react-navigation/native";
-import screenNames from "../../helpers/ScreenNames/screenNames";
 
 const DeleteAccountScreen = () => {
-    const { clearLoginData } = useAuthStorage();
-    const navigation = useNavigation()
     const [formState, setFormState] = useState({
         name: "",
         email: "",

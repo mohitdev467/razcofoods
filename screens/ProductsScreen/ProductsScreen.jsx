@@ -317,6 +317,8 @@ const styles = StyleSheet.create({
     color: Colors.whiteColor,
     fontSize: Responsive.font(3.5),
     alignSelf: "center",
-    marginHorizontal: Responsive.widthPx(3)
+    marginHorizontal: Responsive.widthPx(3),
+    width:Responsive.widthPx(15)
+
   },
 });
