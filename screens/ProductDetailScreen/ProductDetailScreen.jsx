@@ -149,6 +149,7 @@ const ProductDetailScreen = () => {
         {/* Product Details */}
         <View style={styles.detailsContainer}>
           <Text style={styles.productName}>{product?.data?.productName}</Text>
+          <Text style={[styles.productName,{fontSize:Responsive.font(4.2)}]}>{`Size: ${product?.data?.size}`}</Text>
           <Text style={styles.price}>${product?.data?.price}</Text>
 
           {/* Quantity Selector */}
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
     marginBottom: responsiveHeight(1),
   },
   price: {
-    fontSize: responsiveFontSize(2),
+    fontSize: responsiveFontSize(3),
     color: "#000",
     marginBottom: responsiveHeight(2),
   },
