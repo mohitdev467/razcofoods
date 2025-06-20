@@ -6,7 +6,6 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  FlatList,
 } from "react-native";
 import Swiper from "react-native-swiper";
 import {
@@ -30,6 +29,8 @@ import useProductById from "../../helpers/Hooks/useProductById";
 import { Colors } from "../../helpers/theme/colors";
 import useAuthStorage from "../../helpers/Hooks/useAuthStorage";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ProductAccordian from "../../helpers/Accordians/ProductAccordian";
+import { formatDescriptionRich } from "../../Utilities/FormatDescriptionUtils/FormatDescriptionUtils";
 
 const ProductDetailScreen = () => {
   const [quantity, setQuantity] = useState(0);
@@ -40,6 +41,12 @@ const ProductDetailScreen = () => {
   const { productData } = route?.params;
   const { product } = useProductById(productData?._id);
   const numericPrice = parseFloat(product?.data?.price);
+  const [collapsedStates, setCollapsedStates] = useState({
+    details: true,
+    ingredients: true,
+    directions: true,
+    warnings: true,
+  });
   const { loginData } = useAuthStorage();
   const { data, loading, error } = useAllProducts(
     product?.data?.subCategory,
@@ -71,6 +78,13 @@ const ProductDetailScreen = () => {
     toggleWishlistItem(product?.data);
   };
 
+  const toggleSection = (key) => {
+    setCollapsedStates((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
   const handleAdd = async () => {
     const newQty = quantity + 1;
     setQuantity(newQty);
@@ -99,10 +113,7 @@ const ProductDetailScreen = () => {
       });
     }
   };
-  // Toggle read more/less
-  const toggleReadMore = () => {
-    setIsReadMore(!isReadMore);
-  };
+  
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -111,9 +122,10 @@ const ProductDetailScreen = () => {
     );
   }
 
-  // if (!products?.length) return <Text>No products found</Text>;
+
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor:Colors.whiteColor }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor }}>
       <HeaderWithBack title="Product Detail" />
 
       <ScrollView style={styles.container}>
@@ -206,20 +218,43 @@ const ProductDetailScreen = () => {
           </View>
 
           {/* Product Description */}
-          {product?.data?.description && (
-            <>
-              <Text style={styles.productDetailsText}>Product Details :</Text>
+          <View style={styles.accordianWrapper}>
+            {product?.data?.description && (
+              <ProductAccordian
+                title="Details"
+                content={formatDescriptionRich(product?.data?.description)}
+                collapsed={collapsedStates?.details}
+                onToggle={() => toggleSection('details')}
+              />
+            )}
 
-              <Text style={styles.description}>
-                {isReadMore
-                  ? product?.data?.description
-                  : `${product?.data?.description?.substring(0, 100)}...`}
-                <Text onPress={toggleReadMore} style={styles.readMore}>
-                  {isReadMore ? " Read Less" : " Read More"}{" "}
-                </Text>
-              </Text>
-            </>
-          )}
+            {product?.data?.ingredients && (
+              <ProductAccordian
+                title="Ingredients"
+                content={product?.data?.ingredients}
+                collapsed={collapsedStates?.ingredients}
+                onToggle={() => toggleSection('ingredients')}
+              />
+            )}
+
+            {product?.data?.directions && (
+              <ProductAccordian
+                title="Directions"
+                content={product?.data?.directions}
+                collapsed={collapsedStates?.directions}
+                onToggle={() => toggleSection('directions')}
+              />
+            )}
+
+            {product?.data?.warnings && (
+              <ProductAccordian
+                title="Warnings"
+                content={product?.data?.warnings}
+                collapsed={collapsedStates?.warnings}
+                onToggle={() => toggleSection('warnings')}
+              />
+            )}
+          </View>
 
           {/* Related Products (Placeholder) */}
           <Text style={styles.relatedProductsText}>Related Products :</Text>
@@ -372,6 +407,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: responsiveHeight(1),
   },
+  accordianWrapper:{
+    marginVertical:Responsive.heightPx(3)
+  }
 });
 
 export default ProductDetailScreen;
